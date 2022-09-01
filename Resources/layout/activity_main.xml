@@ -5,20 +5,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_start"
     android:minWidth="25px"
     android:minHeight="25px">
     <TextView
         android:text="@string/Intro"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="25sp"
+        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:id="@+id/textView1" />
+
+    <TextView
+        android:text="@string/ListTitle"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_below="@id/textView1"
+        android:id="@+id/ListTitle"
+        />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:text="Hi my name is what???"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ListTitle"
+        android:textColor="@android:color/white"
+        android:id="@+id/inputField1" />
+
 
 
     <Button
-        android:text="@string/Button1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView1"
-        android:id="@+id/button1" />
+        android:text="+"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:layout_toRightOf="@id/inputField1"
+        android:layout_alignBaseline="@id/inputField1"
+        android:id="@+id/addItemButton" />
+
+
+
+
 </RelativeLayout>
