@@ -18,12 +18,12 @@
         android:text="-"
         android:layout_width="40sp"
         android:layout_height="40sp"
-        android:layout_toRightOf="@id/itemName"
+        android:layout_toLeftOf="@id/itemAmount"
         android:id="@+id/subtractItemButton" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/subtractItemButton"
+        android:layout_toLeftOf="@id/addItemButton"
         android:text="0"
         android:id="@+id/itemAmount"
         android:textColor="@color/black"
@@ -34,7 +34,7 @@
         android:layout_width="40sp"
         android:layout_height="40sp"
         android:paddingLeft="50sp"
-        android:layout_toRightOf="@id/itemAmount"
+        android:layout_alignParentRight="@id/itemAmount"
         android:layout_gravity="right"
         android:id="@+id/addItemButton" />
 
