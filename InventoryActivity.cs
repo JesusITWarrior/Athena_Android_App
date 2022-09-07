@@ -63,6 +63,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 i.ItemChanged += UpdateView;
             }
+            DatabaseManager.WriteToDB(inventory);
         }
 
         public void WriteListToFile()

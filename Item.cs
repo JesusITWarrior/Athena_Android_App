@@ -24,6 +24,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         }
     }
 
+    public class ItemDB
+    {
+        public string id { get; set; }
+        public List<Item> currentInventory { get; set; }
+    }
+
     class ItemListViewAdapter : BaseAdapter<Item> {
         public List<Item> inventory;
         private Context ctx;

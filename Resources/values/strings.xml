@@ -4,4 +4,6 @@
   <string name="Intro">IAPYX Innovations Fridge App</string>
   <string name="ToList">Inventory List</string>
   <string name="ListTitle">Items in Fridge</string>
+  <string name="UsernamePrompt">Username</string>
+  <string name="PasswordPrompt">Password</string>
 </resources>
