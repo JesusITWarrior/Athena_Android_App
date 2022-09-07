@@ -2,6 +2,6 @@
     <string name="app_name">IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP</string>
     <string name="action_settings">Settings</string>
   <string name="Intro">IAPYX Innovations Fridge App</string>
-  <string name="Button1">Click Me For No Reason</string>
-  <string name="ListTitle">Items in Fridge:</string>
+  <string name="ToList">Inventory List</string>
+  <string name="ListTitle">Items in Fridge</string>
 </resources>

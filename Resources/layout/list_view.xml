@@ -5,11 +5,12 @@
     android:layout_height="match_parent">
       
     <TextView
+        style="@style/TextShadowStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Athena"
         android:id="@+id/itemName"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="26sp"
         android:paddingLeft="10sp"
         android:paddingRight="40sp"
@@ -21,12 +22,13 @@
         android:layout_alignParentRight="true"
         android:id="@+id/addItemButton" />
     <TextView
+        style="@style/TextShadowStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/addItemButton"
         android:text="0"
         android:id="@+id/itemAmount"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="26sp"
         android:textStyle="bold"/>
     <Button

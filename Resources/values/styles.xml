@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+  <style name="TextShadowStyle">
+    <item name="android:shadowColor">@color/black</item>
+    <item name="android:shadowDx">1</item>
+    <item name="android:shadowDy">-1</item>
+    <item name="android:shadowRadius">2</item>
+  </style>
+
 </resources>

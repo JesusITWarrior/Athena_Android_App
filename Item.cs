@@ -11,15 +11,16 @@ using System.Text;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
-    class Item
+    public class Item
     {
-        public event EventHandler ItemChanged;
+        public delegate void Updater(Item i);
+        public event Updater ItemChanged;
         public string itemName { get; set; }
         public int itemAmount { get; set; }
 
         public void eventInvocation()
         {
-            ItemChanged?.Invoke(this, EventArgs.Empty);
+            ItemChanged?.Invoke(this);
         }
     }
 
@@ -62,17 +63,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             sub.Click += (o, e) =>
             {
                 //get item here from list
-                if (inventory[position].itemAmount > 0)
-                {
-                    inventory[position].itemAmount--;
-                    inventory[position].eventInvocation();
-                }
-                if (inventory[position].itemAmount == 0)
-                {
-                    //Warn user that there's nothing left, and ask if they want to clear it.
-                    //if they say yes, clear item from list and visual list
-                    //else leave it be.
-                }
+                inventory[position].itemAmount--;
+                inventory[position].eventInvocation();
             };
             Button add = row.FindViewById<Button>(Resource.Id.addItemButton);
             add.Click += (o, e) =>
