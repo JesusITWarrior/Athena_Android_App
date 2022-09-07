@@ -8,12 +8,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
     [Activity(Label = "InventoryActivity")]
     public class InventoryActivity : Activity
     {
+        string filename = "inv-list.txt";
         List<Item> inventory;
         private ListView lv;
         protected override void OnCreate(Bundle savedInstanceState)
@@ -31,18 +34,42 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             addButton.Click += AddNewItem;
 
             lv = FindViewById<ListView>(Resource.Id.inventory);
-
             inventory = new List<Item>();
-            inventory.Add(new Item() { itemAmount = 5, itemName = "Apple" });
-            inventory.Add(new Item() { itemAmount = 2, itemName = "Banana" });
 
-            ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory);
-            lv.Adapter = adapter;
+            InitList();
+            if (inventory.Count != 0)
+            {
+                ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory);
+                lv.Adapter = adapter;
+            }
         }
 
         public void InitList()
         {
+            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
+            if (File.Exists(destination))
+            {
+                string rawJson = File.ReadAllText(destination);
+                if (rawJson != "")
+                {
+                    inventory = JsonConvert.DeserializeObject<List<Item>>(rawJson);
+                }
+            }
+            else
+            {
+                File.Create(destination);
+            }
+            foreach (Item i in inventory)
+            {
+                i.ItemChanged += UpdateView;
+            }
+        }
 
+        public void WriteListToFile()
+        {
+            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
+            string rawJson = JsonConvert.SerializeObject(inventory);
+            File.WriteAllText(destination, rawJson);
         }
 
         public void UpdateView(Item i)
@@ -51,6 +78,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 inventory.Remove(i);
             }
+            WriteListToFile();
             ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory);
             lv.Adapter = adapter;
         }
@@ -76,7 +104,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 newItem.ItemChanged += UpdateView;
                 inventory.Add(newItem);
             }
-
+            WriteListToFile();
             ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory);
             lv.Adapter = adapter;
         }
