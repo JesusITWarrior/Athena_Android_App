@@ -36,6 +36,13 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             username = ds.username;
             password = ds.password;
             //Handle any auth here
+            //Login();
+            return true;
+        }
+
+        private static async Task<bool> Login()
+        {
+            await Task.Delay(1000);
             return true;
         }
 
@@ -76,30 +83,62 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         private Container container;
 
         // The name of the database and container we will create
-        private string databaseId = "Global";
-        private string containerId = "ReportedData";
+        private static string databaseId = "Global";
+        private static string containerId = "ReportedData";
 
         public static async Task WriteToDB(List<Item> inventory)
         {
             try
             {
                 CosmosClient client = new CosmosClient(EndpointUri, PrimaryKey);
-                Database database = await client.CreateDatabaseIfNotExistsAsync(id: "Global");
-                Container container = await database.CreateContainerIfNotExistsAsync(id: "ReportedData", partitionKeyPath: "/id", throughput: 400);
+                Database database = await client.CreateDatabaseIfNotExistsAsync(databaseId);
+                Container container = await database.CreateContainerIfNotExistsAsync(containerId, partitionKeyPath: "/id", throughput: 400);
                 ItemDB items = new ItemDB();
                 items.id = UserData.username +" Inventory";
                 items.currentInventory = inventory;
-                ItemResponse<ItemDB> response = await container.CreateItemAsync<ItemDB>(items);
+                ItemResponse<ItemDB> response;
+                try
+                {
+                    response = await container.ReplaceItemAsync<ItemDB>(items, items.id);
+                }
+                catch (CosmosException ce)
+                {
+                    response = await container.CreateItemAsync<ItemDB>(items);
+                }
             }
             catch (Exception ce)
             {
-
+                return;
             }
         }
 
-        public static async Task ReadFromDB()
+        public static async Task<ItemDB> ReadFromDB()
         {
+            try
+            {
+                CosmosClient client = new CosmosClient(EndpointUri, PrimaryKey);
+                Database database = await client.CreateDatabaseIfNotExistsAsync(databaseId);
+                Container container = await database.CreateContainerIfNotExistsAsync(containerId, partitionKeyPath: "/id", throughput: 400);
 
+                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Inventory\"";
+                QueryDefinition query = new QueryDefinition(rawQuery);
+                using FeedIterator<ItemDB> queryResult = container.GetItemQueryIterator<ItemDB>(query);
+                ItemDB items = new ItemDB();
+
+                while (queryResult.HasMoreResults)
+                {
+                    FeedResponse<ItemDB> resultSet = await queryResult.ReadNextAsync();
+                    foreach (ItemDB item in resultSet)
+                    {
+                        items = item;
+                    }
+                }
+                return items;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public static async Task DeleteFromDB()

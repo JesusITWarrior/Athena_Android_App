@@ -44,8 +44,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
         }
 
-        public void InitList()
+        public async void InitList()
         {
+            
             var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
             if (File.Exists(destination))
             {
@@ -59,29 +60,55 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 File.Create(destination);
             }
-            foreach (Item i in inventory)
+            AddItemEvents();
+            UpdateView();
+            try
             {
-                i.ItemChanged += UpdateView;
+                //Try to fetch list from database
+                ItemDB databaseList = await DatabaseManager.ReadFromDB();
+                //Show loading
+                inventory = databaseList.currentInventory;
+                AddItemEvents();
+                WriteListToFile();  //Immediately makes a local file in case it goes offline
             }
-            DatabaseManager.WriteToDB(inventory);
+            catch (Exception e)
+            {
+
+            }
+            UpdateView();
         }
 
         public void WriteListToFile()
         {
             var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
+            if (!File.Exists(destination))
+                File.Create(destination);
             string rawJson = JsonConvert.SerializeObject(inventory);
             File.WriteAllText(destination, rawJson);
         }
 
-        public void UpdateView(Item i)
+        public void UpdateView(Item i=null)
         {
-            if (i.itemAmount == 0)
+            if (i != null)
             {
-                inventory.Remove(i);
+                if (i.itemAmount == 0)
+                {
+                    inventory.Remove(i);
+                }
             }
             WriteListToFile();
+            DatabaseManager.WriteToDB(inventory);
+            //await DatabaseManager.WriteToDB(inventory);
             ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory);
             lv.Adapter = adapter;
+        }
+
+        public void AddItemEvents()
+        {
+            foreach (Item i in inventory)
+            {
+                i.ItemChanged += UpdateView;
+            }
         }
 
         public void AddNewItem(object o, EventArgs e)
@@ -104,8 +131,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 newItem.itemAmount = 1;
                 newItem.ItemChanged += UpdateView;
                 inventory.Add(newItem);
+                inventory.Sort((x,y) => string.Compare(x.itemName, y.itemName));
             }
             WriteListToFile();
+            DatabaseManager.WriteToDB(inventory);
             ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory);
             lv.Adapter = adapter;
         }
