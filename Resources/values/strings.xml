@@ -6,5 +6,5 @@
   <string name="ListTitle">Items in Fridge:</string>
   <string name="UsernamePrompt">Username</string>
   <string name="PasswordPrompt">Password</string>
-  <string name="ItemLabel">Item</string>>
+  <string name="ItemLabel">Item</string>
 </resources>

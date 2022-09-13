@@ -33,7 +33,9 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="25sp"
+            android:textSize="20sp"
+            android:paddingTop="5sp"
+            android:paddingBottom="5sp"
             android:id="@+id/itemInput"
             android:textColor="@android:color/black"/>
     </com.google.android.material.textfield.TextInputLayout>
