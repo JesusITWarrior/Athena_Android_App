@@ -71,7 +71,6 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -123,14 +122,15 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\bg_start.xml" />
-    <AndroidResource Include="Resources\layout\test.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-      <SubType>Designer</SubType>
-    </AndroidResource>
     <AndroidResource Include="Resources\layout\list_view.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\info_screen.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\MainActionBar.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
