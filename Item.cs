@@ -27,7 +27,14 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     public class ItemDB
     {
         public string id { get; set; }
+        public DateTime updatedTime { get; set; }
         public List<Item> currentInventory { get; set; }
+    }
+
+    public struct ItemFile
+    {
+        public DateTime updatedTime { get; set; }
+        public List<Item> currentInventory{ get; set; }
     }
 
     class ItemListViewAdapter : BaseAdapter<Item> {

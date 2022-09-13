@@ -66,35 +66,38 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     }
     class DatabaseManager
     {
-        // ADD THIS PART TO YOUR CODE
-
         // The Azure Cosmos DB endpoint for running this sample.
         private static readonly string EndpointUri = "https://iapyxretrofitapp.documents.azure.com:443/";
         // The primary key for the Azure Cosmos account.
         private static readonly string PrimaryKey = "zGVFeZfK22QFtw7H8YMQ3ms6sy0UGpniSwzD2E0SmcCDwK45lSSYwGQideqvwY2PK9VS0qKkBL4myDG5Obqepg==";
 
         // The Cosmos client instance
-        private CosmosClient cosmosClient;
+        private static CosmosClient client;
 
         // The database we will create
-        private Database database;
+        private static Database database;
 
         // The container we will create.
-        private Container container;
+        private static Container container;
 
         // The name of the database and container we will create
         private static string databaseId = "Global";
         private static string containerId = "ReportedData";
 
+        public static async Task GetDBInfo()
+        {
+            client = new CosmosClient(EndpointUri, PrimaryKey);
+            database = await client.CreateDatabaseIfNotExistsAsync(databaseId);
+            container = await database.CreateContainerIfNotExistsAsync(containerId, partitionKeyPath: "/id", throughput: 400);
+        }
+
         public static async Task WriteToDB(List<Item> inventory)
         {
             try
             {
-                CosmosClient client = new CosmosClient(EndpointUri, PrimaryKey);
-                Database database = await client.CreateDatabaseIfNotExistsAsync(databaseId);
-                Container container = await database.CreateContainerIfNotExistsAsync(containerId, partitionKeyPath: "/id", throughput: 400);
                 ItemDB items = new ItemDB();
                 items.id = UserData.username +" Inventory";
+                items.updatedTime = System.DateTime.Now;
                 items.currentInventory = inventory;
                 ItemResponse<ItemDB> response;
                 try
@@ -116,10 +119,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             try
             {
-                CosmosClient client = new CosmosClient(EndpointUri, PrimaryKey);
-                Database database = await client.CreateDatabaseIfNotExistsAsync(databaseId);
-                Container container = await database.CreateContainerIfNotExistsAsync(containerId, partitionKeyPath: "/id", throughput: 400);
-
                 string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Inventory\"";
                 QueryDefinition query = new QueryDefinition(rawQuery);
                 using FeedIterator<ItemDB> queryResult = container.GetItemQueryIterator<ItemDB>(query);

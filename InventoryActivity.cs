@@ -16,6 +16,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     [Activity(Label = "InventoryActivity")]
     public class InventoryActivity : Activity
     {
+        bool isOnline = true;
         string filename = "inv-list.txt";
         List<Item> inventory;
         private ListView lv;
@@ -46,35 +47,45 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
         public async void InitList()
         {
-            
+            DateTime fileTime=System.DateTime.MinValue, dbTime=System.DateTime.MinValue;
+            ItemFile itemFile = new ItemFile();
+            ItemDB databaseList = new ItemDB();
             var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
             if (File.Exists(destination))
             {
                 string rawJson = File.ReadAllText(destination);
                 if (rawJson != "")
                 {
-                    inventory = JsonConvert.DeserializeObject<List<Item>>(rawJson);
+                    itemFile = JsonConvert.DeserializeObject<ItemFile>(rawJson);
+                    //inventory = itemFile.currentInventory;
+                    fileTime = itemFile.updatedTime;
                 }
             }
             else
             {
                 File.Create(destination);
             }
-            AddItemEvents();
-            UpdateView();
             try
             {
                 //Try to fetch list from database
-                ItemDB databaseList = await DatabaseManager.ReadFromDB();
+                await DatabaseManager.GetDBInfo();
+                databaseList = await DatabaseManager.ReadFromDB();
                 //Show loading
-                inventory = databaseList.currentInventory;
-                AddItemEvents();
-                WriteListToFile();  //Immediately makes a local file in case it goes offline
+                //inventory = databaseList.currentInventory;
+                dbTime = databaseList.updatedTime;
             }
             catch (Exception e)
             {
-
+                isOnline = false;
             }
+            if (isOnline)
+                inventory = (fileTime >= dbTime) ? itemFile.currentInventory : databaseList.currentInventory;
+            else
+                inventory = itemFile.currentInventory;
+            
+            if (inventory == null)
+                inventory = new List<Item>();
+            AddItemEvents();
             UpdateView();
         }
 
@@ -83,7 +94,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
             if (!File.Exists(destination))
                 File.Create(destination);
-            string rawJson = JsonConvert.SerializeObject(inventory);
+            ItemFile itemFile = new ItemFile();
+            itemFile.updatedTime = System.DateTime.Now;
+            itemFile.currentInventory = inventory;
+            string rawJson = JsonConvert.SerializeObject(itemFile);
             File.WriteAllText(destination, rawJson);
         }
 
@@ -113,7 +127,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
         public void AddNewItem(object o, EventArgs e)
         {
-            string itemToAdd = FindViewById<TextView>(Resource.Id.inputField1).Text;
+            string itemToAdd = FindViewById<TextView>(Resource.Id.itemInput).Text;
             bool foundIt = false;
             for (int i = 0; i < inventory.Count; i++)
             {
