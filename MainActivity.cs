@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Runtime;
 using AndroidX.AppCompat.App;
 using Android.Widget;
+using AndroidX.DrawerLayout.Widget;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -58,13 +59,14 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             SetActionBar(tb);
             TextView title = FindViewById<TextView>(Resource.Id.ABTitle);
             title.Text = UserData.username + "'s ATHENA";
+
             /*Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
             SetSupportActionBar(tb);*/
-            /*Button invBtn = FindViewById<Button>(Resource.Id.ToListButton);
+            Button invBtn = FindViewById<Button>(Resource.Id.ToListButton);
             invBtn.Click += (o, e) =>
             {
                 StartActivity(new Android.Content.Intent(this, typeof(InventoryActivity)));
-            };*/
+            };
         }
     }
 }

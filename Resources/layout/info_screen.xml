@@ -13,10 +13,45 @@
         android:id="@+id/mainToolbar"
         layout="@layout/mainactionbar"/>
 
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="200sp"
+        android:layout_height="match_parent"
+        android:id="@+id/mainDrawer">
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ToList"
         android:id="@+id/ToListButton"
         android:layout_below="@id/mainToolbar"/>
+
+    <TextView
+        android:layout_width="100sp"
+        android:layout_height="50sp"
+        android:text="Temp: ??? F"
+        android:id="@+id/temperature"
+        android:layout_below="@id/ToListButton"/>
+
+    <TextView
+        android:layout_width="100sp"
+        android:layout_height="50sp"
+        android:text="Door Not Open"
+        android:id="@+id/doorStatus"
+        android:layout_alignBaseline="@id/temperature"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:contentDescription="Picture of thing"
+         android:layout_width="match_parent"
+         android:layout_height="200sp"
+        android:text="Picture goes here"
+        android:textColor="@color/white"
+        android:background="@color/black"
+        android:layout_below="@id/temperature"/>
+    
+    
 </RelativeLayout>
