@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using Java.IO;
+using Android.Graphics;
 using Android.App;
 using Android.OS;
 using Android.Runtime;
@@ -13,6 +16,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
+        List<Status> recordedStatus;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -40,10 +44,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     ToContent();
                 };
             }
-            // Set our view from the "main" layout resource
-
-            
-            //title.PaintFlags = Android.Graphics.PaintFlags.UnderlineText;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -52,7 +52,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
-        public void ToContent()
+        private void ToContent()
         {
             SetContentView(Resource.Layout.info_screen);
             Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
@@ -67,6 +67,58 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 StartActivity(new Android.Content.Intent(this, typeof(InventoryActivity)));
             };
+            FetchStatusFromDB();
+        }
+
+        private async void FetchStatusFromDB()
+        {
+            await DatabaseManager.GetDBInfo();
+            StatusDB databaseList;
+            databaseList = await DatabaseManager.ReadStatusFromDB();
+            recordedStatus = databaseList.loggedStatus;
+            if (recordedStatus == null)
+                recordedStatus = new List<Status>();
+
+            UpdateView();
+        }
+
+        public void UpdateView()
+        {
+            TextView temperature = FindViewById<TextView>(Resource.Id.temperature);
+            TextView doorStatus = FindViewById<TextView>(Resource.Id.doorStatus);
+            ImageView shelf = FindViewById<ImageView>(Resource.Id.shelfPic);
+            int? temp=null;
+            bool door=false;
+            string pic=null;
+
+            for (int i = 0; i < recordedStatus.Count;i++)
+            {
+                Status analyzingLog = recordedStatus[i];
+                switch (analyzingLog.dataName) {
+                    case "Temperature":
+                        temp = Convert.ToInt32(analyzingLog.value);
+                        break;
+                    case "Door Status":
+                        door = Convert.ToBoolean(analyzingLog.value);
+                        break;
+                    case "Picture":
+                        pic = Convert.ToString(analyzingLog.value);
+                        break;
+                }
+            }
+
+            temperature.Text = "Temperature: "+temp+" F";
+            if (door)
+                doorStatus.Text = "Door is Open";
+            else
+                doorStatus.Text = "Door is Closed";
+            //Convert pic here
+            if (pic != null) {
+                byte[] bytes = Convert.FromBase64String(pic);
+                Android.Graphics.Bitmap bmp = BitmapFactory.DecodeByteArray(bytes,0,bytes.Length);
+                ImageView iv = FindViewById<ImageView>(Resource.Id.shelfPic);
+                iv.SetImageBitmap(bmp);
+            }
         }
     }
 }

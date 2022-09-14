@@ -16,7 +16,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     [Activity(Label = "InventoryActivity")]
     public class InventoryActivity : Activity
     {
-        bool isOnline = true;
         string filename = "inv-list.txt";
         List<Item> inventory;
         private ListView lv;
@@ -68,17 +67,18 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             try
             {
                 //Try to fetch list from database
-                await DatabaseManager.GetDBInfo();
-                databaseList = await DatabaseManager.ReadFromDB();
+                if (!DatabaseManager.isOnline)
+                    await DatabaseManager.GetDBInfo();
+                databaseList = await DatabaseManager.ReadItemsFromDB();
                 //Show loading
                 //inventory = databaseList.currentInventory;
                 dbTime = databaseList.updatedTime;
             }
             catch (Exception e)
             {
-                isOnline = false;
+                DatabaseManager.isOnline = false;
             }
-            if (isOnline)
+            if (DatabaseManager.isOnline)
                 inventory = (fileTime >= dbTime) ? itemFile.currentInventory : databaseList.currentInventory;
             else
                 inventory = itemFile.currentInventory;

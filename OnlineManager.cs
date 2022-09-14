@@ -80,6 +80,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         // The container we will create.
         private static Container container;
 
+        public static bool isOnline = false;
+
         // The name of the database and container we will create
         private static string databaseId = "Global";
         private static string containerId = "ReportedData";
@@ -89,6 +91,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             client = new CosmosClient(EndpointUri, PrimaryKey);
             database = await client.CreateDatabaseIfNotExistsAsync(databaseId);
             container = await database.CreateContainerIfNotExistsAsync(containerId, partitionKeyPath: "/id", throughput: 400);
+
+            if (container != null)
+                isOnline = true;
         }
 
         public static async Task WriteToDB(List<Item> inventory)
@@ -115,7 +120,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
         }
 
-        public static async Task<ItemDB> ReadFromDB()
+        public static async Task<ItemDB> ReadItemsFromDB()
         {
             try
             {
@@ -136,6 +141,32 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
             catch (Exception e)
             {
+                return null;
+            }
+        }
+
+        public static async Task<StatusDB> ReadStatusFromDB()
+        {
+            try
+            {
+                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Status\"";
+                QueryDefinition query = new QueryDefinition(rawQuery);
+                using FeedIterator<StatusDB> queryResult = container.GetItemQueryIterator<StatusDB>(query);
+                StatusDB status = new StatusDB();
+
+                while (queryResult.HasMoreResults)
+                {
+                    FeedResponse<StatusDB> resultSet = await queryResult.ReadNextAsync();
+                    foreach (StatusDB item in resultSet)
+                    {
+                        status = item;
+                    }
+                }
+                return status;
+            }
+            catch(Exception e)
+            {
+                //No longer connected to the internet!!!
                 return null;
             }
         }

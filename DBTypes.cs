@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
@@ -24,6 +25,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         }
     }
 
+    public class Status
+    {
+        public string dataName { get; set; }
+        public object value { get; set; }
+    }
+
     public class ItemDB
     {
         public string id { get; set; }
@@ -35,6 +42,19 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     {
         public DateTime updatedTime { get; set; }
         public List<Item> currentInventory{ get; set; }
+    }
+
+    public class StatusDB
+    {
+        public string id { get; set; }
+        public DateTime updatedTime { get; set; }
+        public List<Status> loggedStatus { get; set; }
+    }
+
+    public struct StatusFile
+    {
+        public DateTime updatedTime { get; set; }
+        public List<Status> loggedStatus { get; set; }
     }
 
     class ItemListViewAdapter : BaseAdapter<Item> {

@@ -44,14 +44,29 @@
         android:layout_alignBaseline="@id/temperature"
         android:layout_alignParentRight="true"/>
 
-    <TextView
+    <ImageView
         android:contentDescription="Picture of thing"
          android:layout_width="match_parent"
          android:layout_height="200sp"
         android:text="Picture goes here"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:id="@+id/shelfPic"
         android:textColor="@color/white"
         android:background="@color/black"
         android:layout_below="@id/temperature"/>
+
+    <!--<TextView
+        android:contentDescription="Picture of thing"
+         android:layout_width="match_parent"
+         android:layout_height="200sp"
+        android:text="Picture goes here"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:id="@+id/shelfPic"
+        android:textColor="@color/white"
+        android:background="@color/black"
+        android:layout_below="@id/temperature"/>-->
     
     
 </RelativeLayout>
