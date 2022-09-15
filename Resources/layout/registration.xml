@@ -20,7 +20,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/username"
+            android:id="@+id/usernameReg"
             />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
@@ -35,7 +35,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/password"
+            android:id="@+id/passwordReg"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,42 +50,11 @@
         android:textCursorDrawable="@color/black"
         android:textSize="12sp"/> -->
 
-    <CheckBox
-        android:text="Remember Me"
-        android:textColor="@color/white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordLayout"
-        android:layout_marginLeft="100sp"
-        android:id="@+id/RememberMe" />
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/LoginButton"
-        android:layout_below="@id/RememberMe"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No account? No problemo."
-        android:textSize="15sp"
-        android:textColor="@color/white"
-        android:gravity="center"
-        android:layout_below="@id/LoginButton"
-        android:id="@+id/reg1"/>
-
-    <Button
-        android:layout_width="100sp"
-        android:layout_height="50sp"
-        android:id="@+id/registration"
-        android:background="@color/colorAccent"
-        android:text="Register Here!"
-        android:shadowColor="@color/black"
-        android:textColor="@color/white"
-        android:layout_below="@id/reg1"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="5sp"/>
+        android:text="Register"
+        android:id="@+id/RegisterButton"
+        android:layout_below="@id/passwordLayout"/>
 
 </RelativeLayout>

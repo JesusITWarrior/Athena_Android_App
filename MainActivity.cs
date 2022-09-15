@@ -22,9 +22,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
+            DatabaseManager.GetAuthDBInfo();
             if (UserData.ReadLoginInfo())
             {
-                ToContent();
+                Login();
             }
             else
             {
@@ -41,7 +42,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     {
                         UserData.SaveLoginInfo();
                     }
-                    ToContent();
+                    Login();
+                };
+                Button registrationButton = FindViewById<Button>(Resource.Id.registration);
+                registrationButton.Click += (o, e) =>
+                {
+                    StartActivity(typeof(RegistrationActivity));
                 };
             }
         }
@@ -50,6 +56,31 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        private async void Login()
+        {
+            //Check database
+            bool canLogin = true;
+            if (!DatabaseManager.isOnline)
+            {
+                //Throw login connection error
+            }
+            else
+            {
+                canLogin = await DatabaseManager.CheckLogin();
+            }
+            if (canLogin)
+            {
+                await DatabaseManager.GetLogDBInfo();
+                ToContent();
+            }
+            else
+            {
+                UserData.username = "";
+                UserData.password = "";
+                //Throw login error
+            }
         }
 
         private void ToContent()
@@ -72,7 +103,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
         private async void FetchStatusFromDB()
         {
-            await DatabaseManager.GetDBInfo();
+            await DatabaseManager.GetLogDBInfo();
             StatusDB databaseList;
             databaseList = await DatabaseManager.ReadStatusFromDB();
             recordedStatus = databaseList.loggedStatus;
@@ -98,7 +129,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     case "Temperature":
                         temp = Convert.ToInt32(analyzingLog.value);
                         break;
-                    case "Door Status":
+                    case "Door Open Status":
                         door = Convert.ToBoolean(analyzingLog.value);
                         break;
                     case "Picture":

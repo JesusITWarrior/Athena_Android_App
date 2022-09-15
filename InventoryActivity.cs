@@ -68,7 +68,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 //Try to fetch list from database
                 if (!DatabaseManager.isOnline)
-                    await DatabaseManager.GetDBInfo();
+                    await DatabaseManager.GetLogDBInfo();
                 databaseList = await DatabaseManager.ReadItemsFromDB();
                 //Show loading
                 //inventory = databaseList.currentInventory;
