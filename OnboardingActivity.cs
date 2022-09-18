@@ -11,6 +11,7 @@ using AndroidX.AppCompat.App;
 using System.Linq;
 using System.Text;
 using Android.Bluetooth;
+using Android.Content.PM;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
@@ -37,12 +38,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 StartDiscovery();
             }
         }
-
-        protected override void OnResume()
-        {
-            base.OnResume();
-            DiscoverBluetooth();
-        }
         private void TurnOnYourBluetooth()
         {
             //Inform user that they need to turn on their Bluetooth.
@@ -54,13 +49,13 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 Intent intent = new Intent(BluetoothAdapter.ActionRequestEnable);
                 StartActivityForResult(intent, 1);
-                //checkPerms();
+                checkPerms();
+                DiscoverBluetooth();
             }
         }
 
         private void DiscoverBluetooth()
         {
-            checkPerms();
             IntentFilter filter = new IntentFilter();
             filter.AddAction(BluetoothDevice.ActionFound);
             filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
@@ -83,12 +78,26 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             if(Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Lollipop)
             {
-                Android.Content.PM.Permission permissionCheck = CheckSelfPermission("android.permission.ACCESS_FINE_LOCATION");
-                /*permissionCheck += (int)CheckSelfPermission("android.permission.ACCESS_COARSE_LOCATION");
+                int permissionCheck = (int)CheckSelfPermission("android.permission.ACCESS_FINE_LOCATION");
+                permissionCheck += (int)CheckSelfPermission("android.permission.ACCESS_COARSE_LOCATION");
+                permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH");
+                permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH_ADMIN");
                 if(permissionCheck != 0)
                 {
-                    RequestPermissions(new string[] { "Manifest.permission.ACCESS_FINE_LOCATION", "Manifest.permission.ACCESS_COARSE_LOCATION" }, 0);
-                }*/
+                    RequestPermissions(new string[] { "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.BLUETOOTH", "android.permission.BLUETOOTH_ADMIN" }, 0);
+                }
+            }
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            if(requestCode == 0)
+            {
+                Toast.MakeText(this, "Request granted", ToastLength.Short).Show();
+            }
+            else
+            {
+                Toast.MakeText(this, "Request denied", ToastLength.Short).Show();
             }
         }
         [BroadcastReceiver]
