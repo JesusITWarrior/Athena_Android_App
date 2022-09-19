@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using AndroidX.AppCompat.App;
 using System.Linq;
 using System.Text;
+using System.IO;
 using Android.Bluetooth;
 using Android.Content.PM;
 
@@ -19,8 +20,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     public class OnboardingActivity : AppCompatActivity
     {
         static BluetoothAdapter adapter;
+        static BluetoothDevice connectedDevice;
+        Java.Util.UUID uniqueIdentifier;
+        BluetoothSocket socket;
         List<BluetoothDevice> devices = new List<BluetoothDevice>();
         MyBTReceiver receiver;
+        //Do something with this
 
         static DeviceListViewAdapter btUIAdapter;
         static ListView viewableDevices;
@@ -49,7 +54,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 Intent intent = new Intent(BluetoothAdapter.ActionRequestEnable);
                 StartActivityForResult(intent, 1);
-                checkPerms();
+                CheckPerms();
                 DiscoverBluetooth();
             }
         }
@@ -74,7 +79,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             devices = e;
         }
 
-        private void checkPerms()
+        private void CheckPerms()
         {
             if(Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Lollipop)
             {
@@ -112,7 +117,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 if (action == BluetoothDevice.ActionFound)
                 {
                     BluetoothDevice device = (BluetoothDevice)intent.GetParcelableExtra(BluetoothDevice.ExtraDevice);
-                    devices.Add(device);
+                    if(device.Name != null)
+                        devices.Add(device);
                     btUIAdapter = new DeviceListViewAdapter(context, Resource.Layout.BTDeviceListLayout, devices);
                     viewableDevices.Adapter = btUIAdapter;
                 }else if (action == BluetoothAdapter.ActionDiscoveryFinished)
@@ -121,18 +127,45 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 }
             }
         }
+        public async void StartCommunication(object sender, BluetoothDevice device)
+        {
+            connectedDevice = device;
+            uniqueIdentifier = Java.Util.UUID.RandomUUID();
+            socket = device.CreateRfcommSocketToServiceRecord(uniqueIdentifier);
+            //Make something say "Connecting..."
+            await socket.ConnectAsync();
+            //Make it say "Paired"
+            int number = await ReceiveData();
+        }
+
+        private async Task<int> ReceiveData()
+        {
+            byte[] buffer = new byte[1024];
+            //Read from Pi with:
+            return await socket.InputStream.ReadAsync(buffer, 0, buffer.Length);
+        }
+
+        private async void SendData(string data)
+        {
+            byte[] buffer = new byte[1024];
+            buffer = Convert.FromBase64String(data);
+            //Write to Pi with:
+            await socket.OutputStream.WriteAsync(buffer, 0, buffer.Length);
+        }
     }
     class DeviceListViewAdapter : BaseAdapter<BluetoothDevice>
     {
         private LayoutInflater layinf;
         private List<BluetoothDevice> devices;
         private int resourceId;
+        Context ctx;
 
         public DeviceListViewAdapter(Context context, int tvResourceId, List<BluetoothDevice> devices)
         {
             this.devices = devices;
             layinf = (LayoutInflater)context.GetSystemService(Context.LayoutInflaterService);
             resourceId = tvResourceId;
+            ctx = context;
         }
 
         public override int Count
@@ -159,6 +192,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 TextView deviceName = convertView.FindViewById<TextView>(Resource.Id.deviceName);
                 TextView deviceAddress = convertView.FindViewById<TextView>(Resource.Id.deviceAddress);
+                Button deviceButton = convertView.FindViewById<Button>(Resource.Id.deviceSelectButton);
+                deviceButton.Click += (o, e) =>
+                {
+                    //devices[position].
+                    Toast.MakeText(ctx, "Test Notification " + position.ToString(), ToastLength.Short).Show();
+                };
 
                 deviceName.Text = device.Name;
                 deviceAddress.Text = device.Address;

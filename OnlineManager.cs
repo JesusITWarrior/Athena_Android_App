@@ -227,7 +227,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             try
             {
-                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Inventory\"";
+                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Status\"";
                 //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.key + " Status\"";
                 QueryDefinition query = new QueryDefinition(rawQuery);
                 using FeedIterator<StatusDB> queryResult = container.GetItemQueryIterator<StatusDB>(query);
