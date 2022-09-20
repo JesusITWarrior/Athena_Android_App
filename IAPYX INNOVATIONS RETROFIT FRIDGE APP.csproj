@@ -65,6 +65,7 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BluetoothManager.cs" />
     <Compile Include="OnboardingActivity.cs" />
     <Compile Include="OnlineManager.cs" />
     <Compile Include="InventoryActivity.cs" />

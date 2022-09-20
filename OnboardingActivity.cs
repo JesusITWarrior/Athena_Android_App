@@ -19,24 +19,18 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     [Activity(Label = "OnboardingActivity")]
     public class OnboardingActivity : AppCompatActivity
     {
-        static BluetoothAdapter adapter;
-        static BluetoothDevice connectedDevice;
-        Java.Util.UUID uniqueIdentifier;
-        BluetoothSocket socket;
-        List<BluetoothDevice> devices = new List<BluetoothDevice>();
-        MyBTReceiver receiver;
         //Do something with this
 
-        static DeviceListViewAdapter btUIAdapter;
-        static ListView viewableDevices;
+        public static DeviceListViewAdapter btUIAdapter;
+        public static ListView viewableDevices;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.onboardingprocess);
             viewableDevices = FindViewById<ListView>(Resource.Id.devices);
             // Create your application here
-            adapter = BluetoothAdapter.DefaultAdapter;
-            if (!adapter.IsEnabled)
+            BluetoothManager.adapter = BluetoothAdapter.DefaultAdapter;
+            if (!BluetoothManager.adapter.IsEnabled)
                 TurnOnYourBluetooth();
             else
             {
@@ -50,11 +44,15 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
         private void StartDiscovery()
         {
-            if (!adapter.IsDiscovering)
+            if (!BluetoothManager.adapter.IsDiscovering)
             {
                 Intent intent = new Intent(BluetoothAdapter.ActionRequestEnable);
+                bool hasPerms = false;
                 StartActivityForResult(intent, 1);
-                CheckPerms();
+                while (!hasPerms)
+                {
+                    hasPerms = CheckPerms();
+                }
                 DiscoverBluetooth();
             }
         }
@@ -64,22 +62,22 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             IntentFilter filter = new IntentFilter();
             filter.AddAction(BluetoothDevice.ActionFound);
             filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
-            receiver = new MyBTReceiver();
-            receiver.OnDiscoveryEnd += DiscoveryFinished;
-            RegisterReceiver(receiver, filter);
-            adapter.StartDiscovery();
+            BluetoothManager.receiver = new BluetoothManager.MyBTReceiver();
+            BluetoothManager.receiver.OnDiscoveryEnd += DiscoveryFinished;
+            RegisterReceiver(BluetoothManager.receiver, filter);
+            BluetoothManager.adapter.StartDiscovery();
             Toast.MakeText(this, "Bluetooth started", ToastLength.Short).Show();
         }
 
         private void DiscoveryFinished(object sender, List<BluetoothDevice> e)
         {
-            UnregisterReceiver(receiver);
-            receiver = null;
+            UnregisterReceiver(BluetoothManager.receiver);
+            BluetoothManager.receiver = null;
 
-            devices = e;
+            BluetoothManager.devices = e;
         }
 
-        private void CheckPerms()
+        private bool CheckPerms()
         {
             if(Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Lollipop)
             {
@@ -90,8 +88,17 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 if(permissionCheck != 0)
                 {
                     RequestPermissions(new string[] { "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.BLUETOOTH", "android.permission.BLUETOOTH_ADMIN" }, 0);
+                    permissionCheck = (int)CheckSelfPermission("android.permission.ACCESS_FINE_LOCATION");
+                    permissionCheck += (int)CheckSelfPermission("android.permission.ACCESS_COARSE_LOCATION");
+                    permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH");
+                    permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH_ADMIN");
+                    if(permissionCheck != 0)
+                        return false;
+                    else
+                        return true;
                 }
             }
+            return true;
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
@@ -105,55 +112,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 Toast.MakeText(this, "Request denied", ToastLength.Short).Show();
             }
         }
-        [BroadcastReceiver]
-        class MyBTReceiver : BroadcastReceiver
-        {
-            public List<BluetoothDevice> devices = new List<BluetoothDevice>();
-            public event EventHandler<List<BluetoothDevice>> OnDiscoveryEnd;
-
-            public override void OnReceive(Context context, Intent intent)
-            {
-                string action = intent.Action;
-                if (action == BluetoothDevice.ActionFound)
-                {
-                    BluetoothDevice device = (BluetoothDevice)intent.GetParcelableExtra(BluetoothDevice.ExtraDevice);
-                    if(device.Name != null)
-                        devices.Add(device);
-                    btUIAdapter = new DeviceListViewAdapter(context, Resource.Layout.BTDeviceListLayout, devices);
-                    viewableDevices.Adapter = btUIAdapter;
-                }else if (action == BluetoothAdapter.ActionDiscoveryFinished)
-                {
-                    OnDiscoveryEnd?.Invoke(this, devices);
-                }
-            }
-        }
-        public async void StartCommunication(object sender, BluetoothDevice device)
-        {
-            connectedDevice = device;
-            uniqueIdentifier = Java.Util.UUID.RandomUUID();
-            socket = device.CreateRfcommSocketToServiceRecord(uniqueIdentifier);
-            //Make something say "Connecting..."
-            await socket.ConnectAsync();
-            //Make it say "Paired"
-            int number = await ReceiveData();
-        }
-
-        private async Task<int> ReceiveData()
-        {
-            byte[] buffer = new byte[1024];
-            //Read from Pi with:
-            return await socket.InputStream.ReadAsync(buffer, 0, buffer.Length);
-        }
-
-        private async void SendData(string data)
-        {
-            byte[] buffer = new byte[1024];
-            buffer = Convert.FromBase64String(data);
-            //Write to Pi with:
-            await socket.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-        }
     }
-    class DeviceListViewAdapter : BaseAdapter<BluetoothDevice>
+    public class DeviceListViewAdapter : BaseAdapter<BluetoothDevice>
     {
         private LayoutInflater layinf;
         private List<BluetoothDevice> devices;
@@ -195,7 +155,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 Button deviceButton = convertView.FindViewById<Button>(Resource.Id.deviceSelectButton);
                 deviceButton.Click += (o, e) =>
                 {
-                    //devices[position].
+                    BluetoothManager.Connect(deviceAddress.Text);
                     Toast.MakeText(ctx, "Test Notification " + position.ToString(), ToastLength.Short).Show();
                 };
 
