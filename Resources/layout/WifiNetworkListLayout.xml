@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DeviceName"
+        android:textSize="30sp"
+        android:id="@+id/wifiName"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40sp"
+        android:background="@color/mtrl_btn_transparent_bg_color"
+        android:id="@+id/wifiSelectButton"/>
+
+</RelativeLayout>

@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Google.Android.Material.TextField;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -14,22 +15,26 @@ using System.IO;
 using Android.Bluetooth;
 using Android.Content.PM;
 
+//Use UserData.DataStruct for passing username and password to pi
+
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
     [Activity(Label = "OnboardingActivity")]
     public class OnboardingActivity : AppCompatActivity
     {
-        //Do something with this
-
+        //Do something with this        
         public static DeviceListViewAdapter btUIAdapter;
+        public static WifiListViewAdapter wifiListViewAdapter;
         public static ListView viewableDevices;
+        public static ListView viewableNetworks;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            SetContentView(Resource.Layout.onboardingprocess);
+            SetContentView(Resource.Layout.bluetoothsearch);
             viewableDevices = FindViewById<ListView>(Resource.Id.devices);
             // Create your application here
             BluetoothManager.adapter = BluetoothAdapter.DefaultAdapter;
+            BluetoothManager.SwitchToWifi += DiscoveryFinished;
             if (!BluetoothManager.adapter.IsEnabled)
                 TurnOnYourBluetooth();
             else
@@ -63,18 +68,23 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             filter.AddAction(BluetoothDevice.ActionFound);
             filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
             BluetoothManager.receiver = new BluetoothManager.MyBTReceiver();
-            BluetoothManager.receiver.OnDiscoveryEnd += DiscoveryFinished;
             RegisterReceiver(BluetoothManager.receiver, filter);
             BluetoothManager.adapter.StartDiscovery();
             Toast.MakeText(this, "Bluetooth started", ToastLength.Short).Show();
         }
 
-        private void DiscoveryFinished(object sender, List<BluetoothDevice> e)
+        private void DiscoveryFinished(List<string> networks)
         {
             UnregisterReceiver(BluetoothManager.receiver);
             BluetoothManager.receiver = null;
+            //BluetoothManager.devices = e;
 
-            BluetoothManager.devices = e;
+            SetContentView(Resource.Layout.wifisearch);
+            viewableNetworks = FindViewById<ListView>(Resource.Id.wifiNetworks);
+            wifiListViewAdapter = new WifiListViewAdapter(this, Resource.Layout.WifiNetworkListLayout, networks);
+            viewableNetworks.Adapter = wifiListViewAdapter;
+
+            WifiListViewAdapter.WifiActivityTime += Wifi;
         }
 
         private bool CheckPerms()
@@ -110,6 +120,30 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             else
             {
                 Toast.MakeText(this, "Request denied", ToastLength.Short).Show();
+            }
+        }
+
+        private void Wifi(string name)
+        {
+            Intent i = new Intent(this, typeof(WifiConnection));
+            Bundle bundle = new Bundle();
+            bundle.PutString("WifiTitle", name);
+            i.PutExtras(bundle);
+            StartActivity(i);
+        }
+
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (data.HasExtra("creds"))
+            {
+                string creds = data.Extras.GetString("creds");
+                BluetoothManager.SendData(creds);
+                Func<Task<string>> = async () =>
+                {
+                    return await BluetoothManager.ReceiveData();
+                };
+                string myStuff = responseTask;
             }
         }
     }
@@ -165,5 +199,78 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             return convertView;
         }
 
+    }
+
+    public class WifiListViewAdapter : BaseAdapter<string>
+    {
+        private LayoutInflater layinf;
+        private List<string> wifiList;
+        private int resourceId;
+        Context ctx;
+        public static event WifiInfo WifiActivityTime;
+        public delegate void WifiInfo(string name);
+
+        public WifiListViewAdapter(Context context, int tvResourceId, List<string> wifiList)
+        {
+            this.wifiList = wifiList;
+            layinf = (LayoutInflater)context.GetSystemService(Context.LayoutInflaterService);
+            resourceId = tvResourceId;
+            ctx = context;
+        }
+
+        public override int Count
+        {
+            get { return wifiList.Count; }
+        }
+
+        public override long GetItemId(int position)
+        {
+            return position;
+        }
+
+        public override string this[int position]
+        {
+            get { return wifiList[position]; }
+        }
+
+        public override View GetView(int position, View convertView, ViewGroup parent)
+        {
+            convertView = layinf.Inflate(resourceId, null);
+            string wifiNetwork = wifiList[position];
+
+            if (wifiNetwork != null)
+            {
+                TextView wifiName = convertView.FindViewById<TextView>(Resource.Id.wifiName);
+                Button wifiButton = convertView.FindViewById<Button>(Resource.Id.wifiSelectButton);
+                TextInputLayout uLayout = convertView.FindViewById<TextInputLayout>(Resource.Id.usernameLayout);
+                TextView username = convertView.FindViewById<TextView>(Resource.Id.usernameInput);
+                TextInputLayout pLayout = convertView.FindViewById<TextInputLayout>(Resource.Id.passwordLayout);
+                TextView password = convertView.FindViewById<TextView>(Resource.Id.passwordInput);
+                Button connectButton = convertView.FindViewById<Button>(Resource.Id.connectButton);
+
+                //uLayout.Visibility = ViewStates.Gone;
+                //pLayout.Visibility = ViewStates.Gone;
+                //connectButton.Visibility = ViewStates.Gone;
+
+                wifiButton.Click += (o, e) =>
+                {
+                    WifiActivityTime.Invoke(wifiNetwork);
+                    Toast.MakeText(ctx, "Test Notification " + position.ToString(), ToastLength.Short).Show();
+                };
+
+                /*connectButton.Click += (o, e) =>
+                {
+                    BluetoothManager.WifiStruct wifiRequest = new BluetoothManager.WifiStruct();
+                    wifiRequest.SSID = wifiNetwork;
+                    //If there's a username, this will inclue that.
+                    wifiRequest.key = password.Text;
+                    string request = Newtonsoft.Json.JsonConvert.SerializeObject(wifiRequest);
+                    BluetoothManager.SendData(request);
+                };*/
+
+                wifiName.Text = wifiNetwork;
+            }
+            return convertView;
+        }
     }
 }
