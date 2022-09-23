@@ -20,7 +20,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             // Create your application here
             SetContentView(Resource.Layout.WifiCredentials);
-            TextView title = FindViewById<TextView>(Resource.Id.wifiTitle);
+            TextView title = FindViewById<TextView>(Resource.Id.wifiName);
             TextView user = FindViewById<TextView>(Resource.Id.usernameInput);
             TextView password = FindViewById<TextView>(Resource.Id.passwordInput);
             Button connect = FindViewById<Button>(Resource.Id.connectButton);
@@ -32,7 +32,20 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             connect.Click += (o,e) =>
             {
-
+                //Show "connecting"
+                BluetoothManager.WifiStruct cred = new BluetoothManager.WifiStruct();
+                cred.SSID = title.Text;
+                cred.key = password.Text;
+                string auth = Newtonsoft.Json.JsonConvert.SerializeObject(cred);
+                BluetoothManager.SendData(auth);
+                string confirmation = System.Threading.Tasks.Task.Run(async () => { 
+                    await System.Threading.Tasks.Task.Delay(25000);
+                    return await BluetoothManager.ReceiveData(); }).Result;
+                bool isWorking = Convert.ToBoolean(confirmation);
+                if (isWorking)
+                {
+                    Finish();
+                }
             };
         }
     }

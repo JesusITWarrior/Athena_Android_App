@@ -132,20 +132,15 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             StartActivity(i);
         }
 
-        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        /*protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
             if (data.HasExtra("creds"))
             {
                 string creds = data.Extras.GetString("creds");
-                BluetoothManager.SendData(creds);
-                Func<Task<string>> = async () =>
-                {
-                    return await BluetoothManager.ReceiveData();
-                };
-                string myStuff = responseTask;
+                
             }
-        }
+        }*/
     }
     public class DeviceListViewAdapter : BaseAdapter<BluetoothDevice>
     {
@@ -243,10 +238,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 TextView wifiName = convertView.FindViewById<TextView>(Resource.Id.wifiName);
                 Button wifiButton = convertView.FindViewById<Button>(Resource.Id.wifiSelectButton);
                 TextInputLayout uLayout = convertView.FindViewById<TextInputLayout>(Resource.Id.usernameLayout);
-                TextView username = convertView.FindViewById<TextView>(Resource.Id.usernameInput);
+                //TextView username = convertView.FindViewById<TextView>(Resource.Id.usernameInput);
                 TextInputLayout pLayout = convertView.FindViewById<TextInputLayout>(Resource.Id.passwordLayout);
-                TextView password = convertView.FindViewById<TextView>(Resource.Id.passwordInput);
-                Button connectButton = convertView.FindViewById<Button>(Resource.Id.connectButton);
+                //TextView password = convertView.FindViewById<TextView>(Resource.Id.passwordInput);
+                //Button connectButton = convertView.FindViewById<Button>(Resource.Id.connectButton);
 
                 //uLayout.Visibility = ViewStates.Gone;
                 //pLayout.Visibility = ViewStates.Gone;
