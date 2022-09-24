@@ -27,7 +27,19 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 bool success = await DatabaseManager.Register(user.Text, pass.Text);
                 if (success)
                 {
-                    Finish();
+                    SetContentView(Resource.Layout.FirstPair);
+                    Button accept = FindViewById<Button>(Resource.Id.accept);
+                    Button decline = FindViewById<Button>(Resource.Id.decline);
+
+                    accept.Click += (o, e) => {
+                        StartActivity(typeof(OnboardingActivity));
+                        Finish();
+                    };
+
+                    decline.Click += (o, e) =>
+                    {
+                        Finish();
+                    };
                 }
                 else
                 {

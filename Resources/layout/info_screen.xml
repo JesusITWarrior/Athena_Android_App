@@ -56,6 +56,17 @@
         android:background="@color/mtrl_btn_transparent_bg_color"
         android:layout_below="@id/temperature"/>
 
+    <Button
+        android:layout_width="100sp"
+        android:layout_height="50sp"
+        android:id="@+id/bluetooth"
+        android:background="@color/colorAccent"
+        android:text="Bluetooth"
+        android:shadowColor="@color/black"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"/>
+
     <!--<TextView
         android:contentDescription="Picture of thing"
          android:layout_width="match_parent"

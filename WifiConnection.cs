@@ -35,16 +35,17 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Show "connecting"
                 BluetoothManager.WifiStruct cred = new BluetoothManager.WifiStruct();
                 cred.SSID = title.Text;
+                cred.identity = (user.Text.Trim() == "") ? null : user.Text.Trim();
                 cred.key = password.Text;
                 string auth = Newtonsoft.Json.JsonConvert.SerializeObject(cred);
                 BluetoothManager.SendData(auth);
                 bool gotGoodResponse = false;
                 while (!gotGoodResponse)
                 {
-                    string confirmation = System.Threading.Tasks.Task.Run(async () => await BluetoothManager.ReceiveData()).Result;
-                
+                    
                     try
                     {
+                        string confirmation = System.Threading.Tasks.Task.Run(async () => await BluetoothManager.ReceiveData()).Result;
                         bool isWorking = Convert.ToBoolean(confirmation);
                         gotGoodResponse = true;
                         if (isWorking)

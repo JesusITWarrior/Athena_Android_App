@@ -49,11 +49,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 {
                     StartActivity(typeof(RegistrationActivity));
                 };
-                Button bluetoothTest = FindViewById<Button>(Resource.Id.bluetooth);
-                bluetoothTest.Click += (o, e) =>
-                {
-                    StartActivity(typeof(OnboardingActivity));
-                };
             }
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
@@ -102,6 +97,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             invBtn.Click += (o, e) =>
             {
                 StartActivity(new Android.Content.Intent(this, typeof(InventoryActivity)));
+            };
+
+            Button bluetoothTest = FindViewById<Button>(Resource.Id.bluetooth);
+            bluetoothTest.Click += (o, e) =>
+            {
+                StartActivity(typeof(OnboardingActivity));
             };
             FetchStatusFromDB();
         }

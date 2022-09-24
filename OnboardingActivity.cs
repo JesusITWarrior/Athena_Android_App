@@ -27,11 +27,16 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public static WifiListViewAdapter wifiListViewAdapter;
         public static ListView viewableDevices;
         public static ListView viewableNetworks;
+        Button refreshButton;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.bluetoothsearch);
             viewableDevices = FindViewById<ListView>(Resource.Id.devices);
+            refreshButton = FindViewById<Button>(Resource.Id.RefreshBluetooth);
+
+            refreshButton.Click += RestartDiscovery;
+
             // Create your application here
             BluetoothManager.adapter = BluetoothAdapter.DefaultAdapter;
             BluetoothManager.SwitchToWifi += DiscoveryFinished;
@@ -71,6 +76,24 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             RegisterReceiver(BluetoothManager.receiver, filter);
             BluetoothManager.adapter.StartDiscovery();
             Toast.MakeText(this, "Bluetooth started", ToastLength.Short).Show();
+        }
+
+        private void RestartDiscovery(object sender, EventArgs e)
+        {
+            BluetoothManager.adapter.CancelDiscovery();
+            UnregisterReceiver(BluetoothManager.receiver);
+            BluetoothManager.receiver = null;
+            BluetoothManager.devices.Clear();
+            btUIAdapter = new DeviceListViewAdapter(this, Resource.Layout.BTDeviceListLayout, BluetoothManager.devices);
+            viewableDevices.Adapter = btUIAdapter;
+
+
+            IntentFilter filter = new IntentFilter();
+            filter.AddAction(BluetoothDevice.ActionFound);
+            filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
+            BluetoothManager.receiver = new BluetoothManager.MyBTReceiver();
+            RegisterReceiver(BluetoothManager.receiver, filter);
+            BluetoothManager.adapter.StartDiscovery();
         }
 
         private void DiscoveryFinished(List<string> networks)

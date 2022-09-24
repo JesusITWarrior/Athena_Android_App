@@ -24,4 +24,15 @@
         android:id="@+id/devices"
         tools:listitem="@layout/btdevicelistlayout"/>
 
+    <Button
+        android:layout_width="100sp"
+        android:layout_height="50sp"
+        android:id="@+id/RefreshBluetooth"
+        android:background="@color/colorAccent"
+        android:text="Refresh"
+        android:shadowColor="@color/black"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"/>
+
 </RelativeLayout>

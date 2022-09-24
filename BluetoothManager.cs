@@ -21,7 +21,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public delegate void WifiHandler(List<string> list);
         public static event WifiHandler SwitchToWifi;
         public static BluetoothAdapter adapter;
-        public static BluetoothDevice connectedDevice;
+        public static BluetoothDevice connectedDevice = null;
         static string uniqueIdentifier;
         public static BluetoothSocket socket;
         public static List<BluetoothDevice> devices = new List<BluetoothDevice>();
@@ -60,10 +60,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //Make it say "Paired" or connected
 
             UserData.DataStruct creds = new UserData.DataStruct();
-            //creds.username = UserData.username;
-            //creds.password = UserData.password;
-            creds.username = "My";
-            creds.password = "A";
+            creds.username = UserData.username;
+            creds.password = UserData.password;
+            //creds.username = "My";
+            //creds.password = "A";
             string credString = JsonConvert.SerializeObject(creds);
             SendData(credString);
             
@@ -113,6 +113,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public struct WifiStruct
         {
             public string SSID { get; set; }
+            public string identity { get; set; }
             public string key { get; set; }
         }
 
