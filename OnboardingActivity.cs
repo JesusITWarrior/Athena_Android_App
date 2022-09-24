@@ -129,18 +129,23 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             Bundle bundle = new Bundle();
             bundle.PutString("WifiTitle", name);
             i.PutExtras(bundle);
-            StartActivity(i);
+            StartActivityForResult(i, 0);
         }
 
-        /*protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            if (data.HasExtra("creds"))
+            if (data != null)
             {
-                string creds = data.Extras.GetString("creds");
-                
+                if (data.HasExtra("status"))
+                {
+                    bool creds = data.Extras.GetBoolean("status");
+                    if (creds)
+                        Toast.MakeText(this, "Board Successfully Connected to Wifi", ToastLength.Short).Show();
+                        Finish();
+                }
             }
-        }*/
+        }
     }
     public class DeviceListViewAdapter : BaseAdapter<BluetoothDevice>
     {

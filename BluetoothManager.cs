@@ -23,7 +23,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public static BluetoothAdapter adapter;
         public static BluetoothDevice connectedDevice;
         static string uniqueIdentifier;
-        static BluetoothSocket socket;
+        public static BluetoothSocket socket;
         public static List<BluetoothDevice> devices = new List<BluetoothDevice>();
         public static MyBTReceiver receiver;
 
@@ -62,8 +62,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             UserData.DataStruct creds = new UserData.DataStruct();
             //creds.username = UserData.username;
             //creds.password = UserData.password;
-            creds.username = "My Username";
-            creds.password = "My Password";
+            creds.username = "My";
+            creds.password = "A";
             string credString = JsonConvert.SerializeObject(creds);
             SendData(credString);
             
@@ -128,15 +128,28 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 if (action == BluetoothDevice.ActionFound)
                 {
                     BluetoothDevice device = (BluetoothDevice)intent.GetParcelableExtra(BluetoothDevice.ExtraDevice);
-                    if(device.Name != null && !devices.Contains(device))
+                    if (device.Name != null && OriginalDevice(devices, device))
+                    {
                         devices.Add(device);
-                    BluetoothManager.devices = devices;
-                    OnboardingActivity.btUIAdapter = new DeviceListViewAdapter(context, Resource.Layout.BTDeviceListLayout, devices);
-                    OnboardingActivity.viewableDevices.Adapter = OnboardingActivity.btUIAdapter;
+                        BluetoothManager.devices = devices;
+                        OnboardingActivity.btUIAdapter = new DeviceListViewAdapter(context, Resource.Layout.BTDeviceListLayout, devices);
+                        OnboardingActivity.viewableDevices.Adapter = OnboardingActivity.btUIAdapter;
+                    }
                 }else if (action == BluetoothAdapter.ActionDiscoveryFinished)
                 {
                     OnDiscoveryEnd?.Invoke(this, devices);
                 }
+            }
+            private bool OriginalDevice(List<BluetoothDevice> btl, BluetoothDevice btd)
+            {
+                foreach (BluetoothDevice dev in btl)
+                {
+                    if(btd.Address == dev.Address)
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
         }
 

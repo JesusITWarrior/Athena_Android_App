@@ -38,13 +38,32 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 cred.key = password.Text;
                 string auth = Newtonsoft.Json.JsonConvert.SerializeObject(cred);
                 BluetoothManager.SendData(auth);
-                string confirmation = System.Threading.Tasks.Task.Run(async () => { 
-                    await System.Threading.Tasks.Task.Delay(25000);
-                    return await BluetoothManager.ReceiveData(); }).Result;
-                bool isWorking = Convert.ToBoolean(confirmation);
-                if (isWorking)
+                bool gotGoodResponse = false;
+                while (!gotGoodResponse)
                 {
-                    Finish();
+                    string confirmation = System.Threading.Tasks.Task.Run(async () => await BluetoothManager.ReceiveData()).Result;
+                
+                    try
+                    {
+                        bool isWorking = Convert.ToBoolean(confirmation);
+                        gotGoodResponse = true;
+                        if (isWorking)
+                        {
+                            BluetoothManager.socket.Close();
+                            Intent allGood = new Intent();
+                            allGood.PutExtra("status", true);
+                            SetResult(Result.Ok, allGood);
+                            Finish();
+                        }
+                        else
+                        {
+                            //Throw exception up here
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        gotGoodResponse = false;
+                    }
                 }
             };
         }
