@@ -11,7 +11,7 @@ using System.Text;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
-    [Activity(Label = "RegistrationActivity")]
+    [Activity(Label = "RegistrationActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class RegistrationActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)

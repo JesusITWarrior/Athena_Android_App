@@ -11,7 +11,7 @@ using System.Text;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
-    [Activity(Label = "WifiConnection")]
+    [Activity(Label = "WifiConnection", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class WifiConnection : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)

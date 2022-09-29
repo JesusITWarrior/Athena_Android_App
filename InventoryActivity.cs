@@ -13,7 +13,7 @@ using System.IO;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
-    [Activity(Label = "InventoryActivity")]
+    [Activity(Label = "InventoryActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class InventoryActivity : Activity
     {
         string filename = "inv-list.txt";

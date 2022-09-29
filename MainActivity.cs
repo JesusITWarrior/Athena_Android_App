@@ -13,7 +13,7 @@ using System.Drawing;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class MainActivity : AppCompatActivity
     {
         List<Status> recordedStatus;

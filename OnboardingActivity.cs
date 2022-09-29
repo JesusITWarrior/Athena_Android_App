@@ -19,7 +19,7 @@ using Android.Content.PM;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
-    [Activity(Label = "OnboardingActivity")]
+    [Activity(Label = "OnboardingActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class OnboardingActivity : AppCompatActivity
     {
         //Do something with this        
