@@ -177,8 +177,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             try
             {
                 ItemDB items = new ItemDB();
-                items.id = UserData.username + " Inventory";
-                //items.id = UserData.key +" Inventory";
+                //items.id = UserData.username + " Inventory";
+                items.id = UserData.key +" Inventory";
                 items.updatedTime = System.DateTime.Now;
                 items.currentInventory = inventory;
                 ItemResponse<ItemDB> response;
@@ -201,8 +201,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             try
             {
-                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Inventory\"";
-                //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.key + " Inventory\"";
+                //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Inventory\"";
+                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.key + " Inventory\"";
                 QueryDefinition query = new QueryDefinition(rawQuery);
                 using FeedIterator<ItemDB> queryResult = container.GetItemQueryIterator<ItemDB>(query);
                 ItemDB items = new ItemDB();
@@ -227,8 +227,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             try
             {
-                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Status\"";
-                //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.key + " Status\"";
+                //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Status\"";
+                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.key + " Status\"";
                 QueryDefinition query = new QueryDefinition(rawQuery);
                 using FeedIterator<StatusDB> queryResult = container.GetItemQueryIterator<StatusDB>(query);
                 StatusDB status = new StatusDB();

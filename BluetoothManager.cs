@@ -56,7 +56,21 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             uniqueIdentifier = "a0f9aa1c-465a-45be-8fab-e2c9670ee7c9";
             socket = connectedDevice.CreateRfcommSocketToServiceRecord(Java.Util.UUID.FromString(uniqueIdentifier));
             //Make something say "Connecting..."
-            socket.Connect();
+            bool worked = false;
+            int connectionRetries = 0;
+            while (!worked)
+            {
+                try
+                {
+                    socket.Connect();
+                    worked = true;
+                } catch (Exception e) {
+                    connectionRetries++;
+                    if (connectionRetries == 5)
+                        return;
+                }
+                
+            }
             //Make it say "Paired" or connected
 
             UserData.DataStruct creds = new UserData.DataStruct();
@@ -74,7 +88,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
         public static async Task<string> ReceiveData()
         {
-            byte[] data = new byte[2048];
+            byte[] data = new byte[5120];
             //Read from Pi with:
             await socket.InputStream.ReadAsync(data, 0, data.Length);
             return Encoding.ASCII.GetString(data).Replace("\0","");
@@ -104,7 +118,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 item = item.Replace("ESSID:\"", "");
                 item = item.Replace("\"\n","");
                 item = item.Replace("\\x00", "");
-                if(item.TrimEnd() !="")
+                item = item.Replace("\"","");
+                if(item.TrimEnd() !="" && !wifiList.Contains(item))
                     wifiList.Add(item);
             }
             return wifiList;

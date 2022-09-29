@@ -212,8 +212,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 Button deviceButton = convertView.FindViewById<Button>(Resource.Id.deviceSelectButton);
                 deviceButton.Click += (o, e) =>
                 {
-                    BluetoothManager.Connect(deviceAddress.Text);
+                    //Block any other buttons from being clicked
                     Toast.MakeText(ctx, "Test Notification " + position.ToString(), ToastLength.Short).Show();
+                    BluetoothManager.Connect(deviceAddress.Text);
+                    Toast.MakeText(ctx, "Should be connected", ToastLength.Short).Show();
                 };
 
                 deviceName.Text = device.Name;
