@@ -22,7 +22,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
 
-            DatabaseManager.GetAuthDBInfo();
             if (UserData.ReadLoginInfo())
             {
                 Login();
@@ -62,24 +61,32 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             //Check database
             bool canLogin = true;
+            await DatabaseManager.GetAuthDBInfo();
             if (!DatabaseManager.isOnline)
             {
                 //Throw login connection error
+                TextView loginError = FindViewById<TextView>(Resource.Id.loginError);
+                loginError.Text = "Connection Error";
+                loginError.Visibility = Android.Views.ViewStates.Visible;
+                canLogin = false;
             }
             else
-            {
                 canLogin = await DatabaseManager.CheckLogin();
-            }
+
             if (canLogin)
             {
                 await DatabaseManager.GetLogDBInfo();
                 ToContent();
             }
-            else
+            else if (DatabaseManager.isOnline)
             {
                 UserData.username = "";
                 UserData.password = "";
                 //Throw login error
+                TextView loginError = FindViewById<TextView>(Resource.Id.loginError);
+                loginError.Text = "Username or Password is Incorrect";
+                loginError.Visibility = Android.Views.ViewStates.Visible;
+                
             }
         }
 
@@ -88,8 +95,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             SetContentView(Resource.Layout.info_screen);
             Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
             SetActionBar(tb);
-            TextView title = FindViewById<TextView>(Resource.Id.ABTitle);
-            title.Text = UserData.username + "'s ATHENA";
+            ImageButton pfp = FindViewById<ImageButton>(Resource.Id.pfp);
+            if(UserData.pfp != null)
+                pfp.SetImageBitmap(UserData.pfp);
 
             /*Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
             SetSupportActionBar(tb);*/

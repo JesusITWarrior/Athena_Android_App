@@ -21,6 +21,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public static string password { get; set; }
         public static Guid key { get; set; }
 
+        public static Android.Graphics.Bitmap pfp { get; set; }
+
         public static void SetCredentials(string user, string pass)
         {
             username = user;
@@ -70,6 +72,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             public string id { get; set; }
             public string password { get; set; }
             public Guid key { get; set; }
+            public string pfp { get; set; }
         }
     }
     class DatabaseManager
@@ -97,12 +100,19 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
         public static async Task GetAuthDBInfo()
         {
-            client = new CosmosClient(EndpointUri, PrimaryKey);
-            database = await client.CreateDatabaseIfNotExistsAsync(databaseId);
-            container = await database.CreateContainerIfNotExistsAsync(authContainerId, partitionKeyPath: "/id", throughput: 400);
-
-            if (container != null)
-                isOnline = true;
+            try
+            {
+                client = new CosmosClient(EndpointUri, PrimaryKey);
+                database = await client.CreateDatabaseIfNotExistsAsync(databaseId);
+                container = await database.CreateContainerIfNotExistsAsync(authContainerId, partitionKeyPath: "/id", throughput: 400);
+                if (container != null)
+                    isOnline = true;
+            }
+            catch (Exception e)
+            {
+                isOnline = false;
+            }
+                
         }
 
         public static async Task GetLogDBInfo()
@@ -117,22 +127,26 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             try
             {
-                string rawQuery = "SELECT * FROM AuthBase ab WHERE ab.id = \"" + UserData.username + "\"";
+                string rawQuery = "SELECT * FROM AuthBase ab WHERE ab.id = \"" + UserData.username + "\" AND ab.password = \"" + UserData.password + "\"";
                 QueryDefinition query = new QueryDefinition(rawQuery);
                 using FeedIterator<UserData.AuthDB> queryResult = container.GetItemQueryIterator<UserData.AuthDB>(query);
                 UserData.AuthDB creds = new UserData.AuthDB();
 
-                while (queryResult.HasMoreResults)
+                FeedResponse<UserData.AuthDB> resultSet = await queryResult.ReadNextAsync();
+                foreach (UserData.AuthDB item in resultSet)
                 {
-                    FeedResponse<UserData.AuthDB> resultSet = await queryResult.ReadNextAsync();
-                    foreach (UserData.AuthDB item in resultSet)
+                    creds = item;
+                    if (UserData.password == creds.password)
                     {
-                        creds = item;
-                        if (UserData.password == creds.password)
+                        UserData.key = creds.key;
+                        if (creds.pfp != null)
                         {
-                            UserData.key = creds.key;
-                            return true;
+                            byte[] picRaw = Convert.FromBase64String(creds.pfp);
+                            UserData.pfp = Android.Graphics.BitmapFactory.DecodeByteArray(picRaw, 0, picRaw.Length);
                         }
+                        else
+                            UserData.pfp = null;
+                        return true;
                     }
                 }
                 return false;
@@ -143,14 +157,16 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
         }
 
-        public static async Task<bool> Register(string user, string password)
+        public static async Task<bool> Register(string user, string password, string picString = null)
         {
+            await DatabaseManager.GetAuthDBInfo();
             try
             {
                 UserData.AuthDB cred = new UserData.AuthDB();
                 cred.id = user;
                 cred.password = password;
                 cred.key = Guid.NewGuid();
+                cred.pfp = picString;
                 ItemResponse<UserData.AuthDB> response;
                 try
                 {
@@ -164,6 +180,15 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 UserData.username = user;
                 UserData.password = password;
                 UserData.key = cred.key;
+                if(picString != null)
+                {
+                    byte[] bytes = Convert.FromBase64String(picString);
+                    UserData.pfp = Android.Graphics.BitmapFactory.DecodeByteArray(bytes,0,bytes.Length);
+                }
+                else
+                {
+                    UserData.pfp = null;
+                }
                 return true;
             }
             catch (CosmosException ce)

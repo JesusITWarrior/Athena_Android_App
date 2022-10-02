@@ -19,12 +19,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:textSize="25sp"
-            android:text="Test Words"
+            android:text="ATHENA"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:id="@+id/ABTitle"
-            android:layout_toRightOf="@id/moreOptionsButton"
-            android:paddingLeft="10sp"/>
+            android:id="@+id/ABTitle"/>
+
+        <ImageButton
+            android:contentDescription="Profile Picture Button"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/circle_button"
+            android:src="@drawable/blank_profile_picture"
+            android:id="@+id/pfp"/>
     </RelativeLayout>
 </Toolbar>

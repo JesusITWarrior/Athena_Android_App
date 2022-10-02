@@ -8,6 +8,11 @@
     android:background="@drawable/bg_start"
     android:minWidth="25px"
     android:minHeight="25px">
+
+    <include
+        android:id="@+id/mainToolbar"
+        layout="@layout/mainactionbar"/>
+
     <TextView
         style="@style/TextShadowStyle"
         android:text="@string/ListTitle"
@@ -16,9 +21,11 @@
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/mainToolbar"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:id="@+id/ListTitle"
+        android:layout_marginBottom="20sp"
         />
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

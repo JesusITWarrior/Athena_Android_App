@@ -59,12 +59,23 @@
         android:layout_marginLeft="100sp"
         android:id="@+id/RememberMe" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/red"
+        android:text="Username or Password is Incorrect"
+        android:id="@+id/loginError"
+        android:layout_below="@id/RememberMe"
+        android:gravity="center"
+        android:visibility="gone"/>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login"
         android:id="@+id/LoginButton"
-        android:layout_below="@id/RememberMe"/>
+        android:layout_below="@id/loginError"/>
 
     <TextView
         android:layout_width="match_parent"
