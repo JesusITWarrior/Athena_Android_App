@@ -7,9 +7,9 @@ using Android.OS;
 using Android.Runtime;
 using AndroidX.AppCompat.App;
 using Android.Widget;
+using AndroidX.Core.Graphics.Drawable;
 using AndroidX.DrawerLayout.Widget;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
@@ -96,8 +96,19 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
             SetActionBar(tb);
             ImageButton pfp = FindViewById<ImageButton>(Resource.Id.pfp);
-            if(UserData.pfp != null)
-                pfp.SetImageBitmap(UserData.pfp);
+            if (UserData.pfp != null)
+            {
+                RoundedBitmapDrawable rbmpd = RoundedBitmapDrawableFactory.Create(Resources, UserData.pfp);
+                rbmpd.Circular = true;
+                pfp.SetImageDrawable(rbmpd);
+            }
+            else
+            {
+                Bitmap bmp = BitmapFactory.DecodeResource(Resources ,Resource.Drawable.blank_profile_picture);
+                RoundedBitmapDrawable rbmpd = RoundedBitmapDrawableFactory.Create(Resources, bmp);
+                rbmpd.Circular = true;
+                pfp.SetImageDrawable(rbmpd);
+            }
 
             /*Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
             SetSupportActionBar(tb);*/
@@ -160,7 +171,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //Convert pic here
             if (pic != null) {
                 byte[] bytes = Convert.FromBase64String(pic);
-                Android.Graphics.Bitmap bmp = BitmapFactory.DecodeByteArray(bytes,0,bytes.Length);
+                Bitmap bmp = BitmapFactory.DecodeByteArray(bytes,0,bytes.Length);
                 ImageView iv = FindViewById<ImageView>(Resource.Id.shelfPic);
                 iv.SetImageBitmap(bmp);
             }
