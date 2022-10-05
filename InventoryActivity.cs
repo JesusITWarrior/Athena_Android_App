@@ -23,6 +23,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         string filename = "inv-list.txt";
         List<Item> inventory;
         private ListView lv;
+        Dialog loading;
         
         /// <summary>
         /// Run when Activity is first started. Will make initial setup.
@@ -44,6 +45,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             lv = FindViewById<ListView>(Resource.Id.inventory);
             inventory = new List<Item>();
+
+            loading = new Dialog(this);
+            loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
+            loading.Show();
 
             //Initializes most up-to-date list
             InitList();
@@ -112,6 +117,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //Adds all necessary events to each item and then makes sure the view is synchronized with the inventory file/database
             AddItemEvents();
             UpdateView();
+            loading.Dismiss();
+            loading.Hide();
         }
 
         /// <summary>
@@ -126,7 +133,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             //Creates ItemFile object for writing
             ItemFile itemFile = new ItemFile();
-            itemFile.updatedTime = System.DateTime.Now;
+            itemFile.updatedTime = DateTime.Now;
             itemFile.currentInventory = inventory;
 
             //Converts object to JSON string and writes/overwrites it to the file.

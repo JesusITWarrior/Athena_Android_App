@@ -86,6 +86,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// </summary>
         private async void Login()
         {
+            Dialog loading = new Dialog(this);
+            loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
+            loading.Show();
             //Check database
             bool canLogin = true;
             await DatabaseManager.GetAuthDBInfo();
@@ -117,6 +120,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 loginError.Visibility = Android.Views.ViewStates.Visible;
                 
             }
+            loading.Dismiss();
+            loading.Hide();
         }
 
         /// <summary>

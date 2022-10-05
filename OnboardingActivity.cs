@@ -36,6 +36,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         //Refresh Bluetooth/Wifi button (depending on what is shown)
         Button refreshButton;
         Dialog loginDialog;
+        public static Dialog loading;
 
         /// <summary>
         /// Run as "Main" function. Ran when activity is started.
@@ -46,6 +47,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.bluetoothsearch);
 
+            loading = new Dialog(this);
             //Sets Views and components to global variables for class use
             viewableDevices = FindViewById<ListView>(Resource.Id.devices);
             refreshButton = FindViewById<Button>(Resource.Id.RefreshBluetooth);
@@ -152,7 +154,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             //Sets XML to WiFi searching layout
             SetContentView(Resource.Layout.wifisearch);
-
+            loading.Dismiss();
+            loading.Hide();
             //Assigns all views and necessary view adapters
             viewableNetworks = FindViewById<ListView>(Resource.Id.wifiNetworks);
             wifiListViewAdapter = new WifiListViewAdapter(this, Resource.Layout.WifiNetworkListLayout, networks);
@@ -227,6 +230,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             Button cancel = loginDialog.FindViewById<Button>(Resource.Id.cancelButton);
 
             connect.Click += (o,e) => {
+                loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
+                loading.Show();
                 BluetoothManager.WifiStruct cred = new BluetoothManager.WifiStruct();
                 cred.SSID = wifiName.Text;
                 //If identity is empty, it passes null to device, otherwise it trims and sends the identity... will possibly remove
@@ -249,6 +254,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                         bool isWorking = Convert.ToBoolean(confirmation);
                         //If we got here, that means it's a boolean
                         gotGoodResponse = true;
+                        loading.Dismiss();
+                        loading.Hide();
                         //If we received a successful connection: close up shop
                         if (isWorking)
                         {
@@ -364,11 +371,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 deviceButton.Click += (o, e) =>
                 {
                     //TODO: Block any other buttons from being clicked
-
+                    OnboardingActivity.loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
+                    OnboardingActivity.loading.Show();
                     //When clicked, it should attempt a bluetooth socket connection
-                    Toast.MakeText(ctx, "Test Notification " + position.ToString(), ToastLength.Short).Show();
+                    Toast.MakeText(ctx, "Conntecting to "+deviceName, ToastLength.Short).Show();
                     BluetoothManager.Connect(deviceAddress.Text);
-                    Toast.MakeText(ctx, "Should be connected", ToastLength.Short).Show();
+                    Toast.MakeText(ctx, "Connection successful. Getting WiFi networks.", ToastLength.Short).Show();
                 };
 
                 deviceName.Text = device.Name;

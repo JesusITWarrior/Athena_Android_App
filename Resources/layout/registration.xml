@@ -58,8 +58,9 @@
         android:layout_height="150dp"
         android:layout_below="@id/passwordLayout"
         android:layout_marginTop="30dp"
-        android:background="@drawable/abc_list_selector_background_transition_holo_dark"
+        android:background="@drawable/circle_button"
         android:src="@drawable/blank_profile_picture"
+        android:scaleType="fitXY"
         android:layout_marginLeft="30dp"
         android:id="@+id/pfp"/>
 

@@ -5,6 +5,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using System;
+using AndroidX.Core.Graphics.Drawable;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,12 +39,21 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             Button selectPicture = FindViewById<Button>(Resource.Id.selectPhoto);
             imageView = FindViewById<ImageView>(Resource.Id.pfp);
 
+            //Setting the default picture to be circular
+            Bitmap bmp = BitmapFactory.DecodeResource(Resources, Resource.Drawable.blank_profile_picture);
+            RoundedBitmapDrawable rbmpd = RoundedBitmapDrawableFactory.Create(Resources, bmp);
+            rbmpd.Circular = true;
+            imageView.SetImageDrawable(rbmpd);
+
             //Subscribes selectPicture click event to the ProfilePictureSetup Function
             selectPicture.Click += ProfilePictureSetup;
 
             
             register.Click += async (o, e) =>
             {
+                Dialog loading = new Dialog(this);
+                loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
+                loading.Show();
                 //Attempts to register the user with the username, password, and profile picture
                 user = FindViewById<TextView>(Resource.Id.usernameReg);
                 pass = FindViewById<TextView>(Resource.Id.passwordReg);
@@ -72,6 +82,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 {
                     //Throw some sort of error.
                 }
+                loading.Dismiss();
+                loading.Hide();
             };
         }
 
@@ -107,9 +119,14 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     byte[] bytes = new byte[stream.Length];
                     stream.Read(bytes, 0, bytes.Length);
 
-                    //Converts bytes to string, for logging, and bitmap, for preview
+                    //Converts bytes to string for logging
                     picString = Convert.ToBase64String(bytes);
-                    imageView.SetImageBitmap(BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length));
+
+                    //Converts bytes to Bitmap for preview and saving
+                    Bitmap bmp = BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length);
+                    RoundedBitmapDrawable rbmpd = RoundedBitmapDrawableFactory.Create(Resources, bmp);
+                    rbmpd.Circular = true;
+                    imageView.SetImageDrawable(rbmpd);
                 }
             }
         }
