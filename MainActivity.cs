@@ -4,6 +4,7 @@ using Java.IO;
 using Android.Graphics;
 using Android.App;
 using Android.OS;
+using Android.Content;
 using Android.Runtime;
 using AndroidX.AppCompat.App;
 using Android.Widget;
@@ -21,6 +22,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     {
         List<Status> recordedStatus;
         ProgressBar nonInvasiveLoadingIcon;
+        private BackgroundFetchingService fetchService;
+        private Intent fetchIntent;
         /// <summary>
         /// Acts as "Main" function. Is run the moment this activity is started (app is booted)
         /// </summary>
@@ -130,6 +133,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// </summary>
         private void ToContent()
         {
+            fetchService = new BackgroundFetchingService();
+            fetchIntent = new Intent(this, fetchService.Class);
+            //Handle service start here:
+
             SetContentView(Resource.Layout.info_screen);
             Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
             SetActionBar(tb);
@@ -155,7 +162,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             invBtn.Click += (o, e) =>
             {
                 //When clicked, it starts new Inventory Activity
-                StartActivity(new Android.Content.Intent(this, typeof(InventoryActivity)));
+                StartActivity(new Intent(this, typeof(InventoryActivity)));
             };
 
             //Sets up Bluetooth button setup button for onboarding process
