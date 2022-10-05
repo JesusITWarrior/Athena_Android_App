@@ -20,6 +20,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     public class MainActivity : AppCompatActivity
     {
         List<Status> recordedStatus;
+        ProgressBar nonInvasiveLoadingIcon;
         /// <summary>
         /// Acts as "Main" function. Is run the moment this activity is started (app is booted)
         /// </summary>
@@ -192,6 +193,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             TextView temperature = FindViewById<TextView>(Resource.Id.temperature);
             TextView doorStatus = FindViewById<TextView>(Resource.Id.doorStatus);
             ImageView shelf = FindViewById<ImageView>(Resource.Id.shelfPic);
+            nonInvasiveLoadingIcon = FindViewById<ProgressBar>(Resource.Id.nonInvasiveLoading);
+            nonInvasiveLoadingIcon.Visibility = Android.Views.ViewStates.Visible;
             int? temp=null;
             bool door=false;
             string pic=null;
@@ -216,11 +219,22 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
 
             //Formats the Views to a more readable format with the new values
-            temperature.Text = "Temperature: "+temp+" F";
-            if (door)
-                doorStatus.Text = "Door is Open";
+            temperature.Text = temp+" F";
+            if(temp < 40 && temp > 30)
+                temperature.SetTextColor(Color.Green);
             else
-                doorStatus.Text = "Door is Closed";
+                temperature.SetTextColor(Color.Red);
+
+            if (door)
+            {
+                doorStatus.Text = "Open";
+                doorStatus.SetTextColor(Color.Red);
+            }
+            else
+            {
+                doorStatus.Text = "Closed";
+                doorStatus.SetTextColor(Color.Green);
+            }
 
             //Converts pic string to Bitmap for ImageView
             if (pic != null) {
@@ -229,6 +243,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 ImageView iv = FindViewById<ImageView>(Resource.Id.shelfPic);
                 iv.SetImageBitmap(bmp);
             }
+
+            nonInvasiveLoadingIcon.Visibility = Android.Views.ViewStates.Invisible;
         }
     }
 }

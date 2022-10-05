@@ -284,11 +284,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 loginDialog.Hide();
             };
             loginDialog.Show();
-            /*Intent i = new Intent(this, typeof(WifiConnection));
-            Bundle bundle = new Bundle();
-            bundle.PutString("WifiTitle", name);
-            i.PutExtras(bundle);
-            StartActivityForResult(i, 0);*/
         }
 
         /// <summary>
@@ -453,16 +448,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     WifiActivityTime.Invoke(wifiNetwork);
                     Toast.MakeText(ctx, "Test Notification " + position.ToString(), ToastLength.Short).Show();
                 };
-
-                /*connectButton.Click += (o, e) =>
-                {
-                    BluetoothManager.WifiStruct wifiRequest = new BluetoothManager.WifiStruct();
-                    wifiRequest.SSID = wifiNetwork;
-                    //If there's a username, this will inclue that.
-                    wifiRequest.key = password.Text;
-                    string request = Newtonsoft.Json.JsonConvert.SerializeObject(wifiRequest);
-                    BluetoothManager.SendData(request);
-                };*/
 
                 wifiName.Text = wifiNetwork;
             }

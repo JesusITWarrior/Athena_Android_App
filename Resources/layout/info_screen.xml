@@ -13,48 +13,75 @@
         android:id="@+id/mainToolbar"
         layout="@layout/mainactionbar"/>
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:layout_width="200sp"
-        android:layout_height="match_parent"
-        android:id="@+id/mainDrawer">
-
-    </androidx.drawerlayout.widget.DrawerLayout>
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ToList"
         android:id="@+id/ToListButton"
         android:layout_below="@id/mainToolbar"/>
-
-    <TextView
-        android:layout_width="100sp"
-        android:layout_height="50sp"
-        android:text="Temp: ??? F"
-        android:id="@+id/temperature"
-        android:layout_below="@id/ToListButton"/>
-
-    <TextView
-        android:layout_width="100sp"
-        android:layout_height="50sp"
-        android:text="Door Not Open"
-        android:id="@+id/doorStatus"
-        android:layout_alignBaseline="@id/temperature"
-        android:layout_alignParentRight="true"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/ToListButton"
+        android:id="@+id/temperatureLayout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Internal Temp:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/temperatureTitle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/UnknownTemp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/temperature"/>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignTop="@id/temperatureLayout"
+        android:layout_alignParentRight="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Door Status:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/doorStatusTitle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Unknown"
+            android:textColor="@color/red"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/doorStatus"/>
+    </LinearLayout>
 
     <ImageView
         android:contentDescription="Picture of thing"
-         android:layout_width="match_parent"
-         android:layout_height="200sp"
-        android:text="Picture goes here"
+        android:layout_width="wrap_content"
+        android:layout_height="300sp"
         android:textAlignment="center"
-        android:gravity="center"
+        android:layout_centerInParent="true"
         android:id="@+id/shelfPic"
         android:textColor="@color/white"
         android:background="@color/mtrl_btn_transparent_bg_color"
-        android:layout_below="@id/temperature"/>
+        android:src="@drawable/default_shelf_pic"
+        android:scaleType="fitXY"/>
+
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:visibility="visible"
+        android:id="@+id/nonInvasiveLoading"/>
 
     <Button
         android:layout_width="100sp"
