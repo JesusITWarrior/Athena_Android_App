@@ -35,6 +35,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public static ListView viewableNetworks;
         //Refresh Bluetooth/Wifi button (depending on what is shown)
         Button refreshButton;
+        Dialog loginDialog;
 
         /// <summary>
         /// Run as "Main" function. Ran when activity is started.
@@ -216,11 +217,71 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <param name="name">Name of the WiFi network</param>
         private void Wifi(string name)
         {
-            Intent i = new Intent(this, typeof(WifiConnection));
+            loginDialog = new Dialog(this);
+            loginDialog.SetContentView(Resource.Layout.WifiCredentialPopup);
+            TextView wifiName = loginDialog.FindViewById<TextView>(Resource.Id.wifiName);
+            TextView user = loginDialog.FindViewById<TextView>(Resource.Id.usernameInput);
+            TextView password = loginDialog.FindViewById<TextView>(Resource.Id.passwordInput);
+            wifiName.Text = name;
+            Button connect = loginDialog.FindViewById<Button>(Resource.Id.connectButton);
+            Button cancel = loginDialog.FindViewById<Button>(Resource.Id.cancelButton);
+
+            connect.Click += (o,e) => {
+                BluetoothManager.WifiStruct cred = new BluetoothManager.WifiStruct();
+                cred.SSID = wifiName.Text;
+                //If identity is empty, it passes null to device, otherwise it trims and sends the identity... will possibly remove
+                cred.identity = (user.Text.Trim() == "") ? null : user.Text.Trim();
+                cred.key = password.Text.Trim();
+                //JSON payload created from WifiStruct "cred" object
+                string auth = Newtonsoft.Json.JsonConvert.SerializeObject(cred);
+
+                BluetoothManager.SendData(auth);
+                bool gotGoodResponse = false;
+                //Waits until it receives a confirmation instead of a Raw WifiList from the board
+                while (!gotGoodResponse)
+                {
+                    //Attempts to convert response to a boolean
+                    try
+                    {
+                        //Receives data from Athena device
+                        string confirmation = System.Threading.Tasks.Task.Run(async () => await BluetoothManager.ReceiveData()).Result;
+                        //Attempt to convert data to Boolean
+                        bool isWorking = Convert.ToBoolean(confirmation);
+                        //If we got here, that means it's a boolean
+                        gotGoodResponse = true;
+                        //If we received a successful connection: close up shop
+                        if (isWorking)
+                        {
+                            BluetoothManager.socket.Close();
+                            loginDialog.Dismiss();
+                            loginDialog.Hide();
+                            Toast.MakeText(this, "Board Successfully Connected to Wifi", ToastLength.Short).Show();
+                            Finish();
+                        }
+                        //We got a failure, which means device couldn't connect
+                        else
+                        {
+                            //Throw exception up here
+                        }
+                    }
+                    //Response is not a boolean, so loop needs to be repeated
+                    catch (Exception ex)
+                    {
+                        gotGoodResponse = false;
+                    }
+                }
+            };
+
+            cancel.Click += (o, e) => {
+                loginDialog.Dismiss();
+                loginDialog.Hide();
+            };
+            loginDialog.Show();
+            /*Intent i = new Intent(this, typeof(WifiConnection));
             Bundle bundle = new Bundle();
             bundle.PutString("WifiTitle", name);
             i.PutExtras(bundle);
-            StartActivityForResult(i, 0);
+            StartActivityForResult(i, 0);*/
         }
 
         /// <summary>

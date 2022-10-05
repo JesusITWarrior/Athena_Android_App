@@ -132,10 +132,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             try
             {
                 //Fetches client if it doesn't exist yet
-                if(client != null)
+                if(client == null)
                     client = new CosmosClient(EndpointUri, PrimaryKey);
                 //Fetches database if it doesn't exist yet
-                if(database != null)
+                if(database == null)
                     database = client.GetDatabase(databaseId);
                 //Fetches auth container
                 container = database.GetContainer(authContainerId);

@@ -29,13 +29,13 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             //If "remember me" button is checked a file is written. If that file exists, it automatically logs in the user
-            if (UserData.ReadLoginInfo())
+            /*if (UserData.ReadLoginInfo())
             {
                 Login();
             }
             //otherwise, it takes the user through the login/registration process.
             else
-            {
+            {*/
                 SetContentView(Resource.Layout.activity_main);
                 //Log In Button variable
                 Button loginButton = FindViewById<Button>(Resource.Id.LoginButton);
@@ -60,7 +60,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     //Opens new Registration Activity
                     StartActivity(typeof(RegistrationActivity));
                 };
-            }
+                Button testButton = FindViewById<Button>(Resource.Id.testButton);
+                testButton.Click += (o,e) =>
+                {
+                    StartActivity(typeof(Test));
+                };
+            //}
         }
 
         /// <summary>
