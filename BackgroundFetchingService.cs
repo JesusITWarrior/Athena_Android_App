@@ -62,7 +62,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 float timer = 0f;
                 //bool tempAlarm = false;
                 bool doorAlarm = false;
-                while (isStillRunning)
+                while (instance == this)
                 {
                     StatusDB dbStatus = await DatabaseManager.ReadStatusFromDB();
                     List<Status> status = dbStatus.loggedStatus;
@@ -133,9 +133,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public override void OnTaskRemoved(Intent rootIntent)
         {
             base.OnTaskRemoved(rootIntent);
-
-            StopSelf();
-            isStillRunning = false;
+            Console.WriteLine("Removed");
+            //StopSelf();
 
             Intent broadcastIntent = new Intent();
             broadcastIntent.SetAction("restartservice");
@@ -147,7 +146,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             base.OnDestroy();
             //Function to run when stopped
-            
+            instance = null;
+            Console.WriteLine("Destroyed");
         }
 
         public override IBinder OnBind(Intent intent)
@@ -162,7 +162,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public override void OnReceive(Context context, Intent intent)
         {
             Toast.MakeText(context, "Service restarted", ToastLength.Short).Show();
-            if(Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
             {
                 context.StartForegroundService(new Intent(context, typeof(BackgroundFetchingService)));
             }
