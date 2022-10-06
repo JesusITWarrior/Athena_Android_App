@@ -369,7 +369,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     OnboardingActivity.loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
                     OnboardingActivity.loading.Show();
                     //When clicked, it should attempt a bluetooth socket connection
-                    Toast.MakeText(ctx, "Conntecting to "+deviceName, ToastLength.Short).Show();
+                    Toast.MakeText(ctx, "Conntecting to "+deviceName.Text, ToastLength.Short).Show();
                     BluetoothManager.Connect(deviceAddress.Text);
                     Toast.MakeText(ctx, "Connection successful. Getting WiFi networks.", ToastLength.Short).Show();
                 };

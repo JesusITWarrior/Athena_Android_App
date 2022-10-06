@@ -133,9 +133,17 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// </summary>
         private void ToContent()
         {
+            if (BackgroundFetchingService.instance != null)
+                StopService(new Intent(this, BackgroundFetchingService.instance.Class));
+
             fetchService = new BackgroundFetchingService();
             fetchIntent = new Intent(this, fetchService.Class);
+
             //Handle service start here:
+            if (!serviceIsRunning(fetchService.Class))
+            {
+                StartService(fetchIntent);
+            }
 
             SetContentView(Resource.Layout.info_screen);
             Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
@@ -172,6 +180,29 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 StartActivity(typeof(OnboardingActivity));
             };
 
+            Button test = FindViewById<Button>(Resource.Id.testButton);
+            test.Click += async (o,e) =>
+            {
+                await System.Threading.Tasks.Task.Delay(3000);
+                string channelName = "Fridge Door Alarm!";
+                NotificationChannel chan = new NotificationChannel(channelName, channelName, NotificationImportance.Max);
+                NotificationManager manager = (NotificationManager)GetSystemService(Context.NotificationService);
+                manager.CreateNotificationChannel(chan);
+
+                Notification.Builder notificationBuilder = new Notification.Builder(this, channelName);
+
+                Notification notification = notificationBuilder.SetContentTitle(channelName)
+                                                               .SetSmallIcon(Resource.Mipmap.ic_launcher_round)
+                                                               .SetContentText("Your Fridge Door has been open for longer than a minute!")
+                                                               .SetOngoing(false)
+                                                               .SetChannelId(channelName)
+                                                               .SetAutoCancel(true)
+                                                               .Build();
+
+
+                manager.Notify(1, notification);
+            };
+
             //Gets the current status values for the fridge
             FetchStatusFromDB();
         }
@@ -190,6 +221,21 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 recordedStatus = new List<Status>();
 
             UpdateView();
+        }
+        
+        private bool serviceIsRunning(Java.Lang.Class serviceClass)
+        {
+            ActivityManager manager = (ActivityManager)GetSystemService(Context.ActivityService);
+#pragma warning disable CS0618 // Type or member is obsolete
+            foreach (ActivityManager.RunningServiceInfo service in manager.GetRunningServices(int.MaxValue))
+            {
+                if (serviceClass.Name.Equals(service.Service.ClassName))
+                {
+                    return true;
+                }
+            }
+            return false;
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <summary>
@@ -253,5 +299,13 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             nonInvasiveLoadingIcon.Visibility = Android.Views.ViewStates.Invisible;
         }
+        /*protected override void OnDestroy()
+        {
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.SetAction("restartservice");
+            broadcastIntent.SetClass(this, typeof(Restarter));
+            this.SendBroadcast(broadcastIntent);
+            base.OnDestroy();
+        }*/
     }
 }
