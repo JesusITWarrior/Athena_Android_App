@@ -47,7 +47,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <returns></returns>
         public static bool ReadLoginInfo()
         {
-            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), "nani.fun");
+            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), "nani.athena");
             if (!File.Exists(destination))
                 return false;
             string rawData = File.ReadAllText(destination);
@@ -64,12 +64,13 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// </summary>
         public static void SaveLoginInfo()
         {
-            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), "nani.fun");
+            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), "nani.athena");
             if (!File.Exists(destination))
                 File.Create(destination);
             DataStruct ds = new DataStruct();
             ds.username = username;
             ds.password = password;
+            ds.key = key;
             string raw = JsonConvert.SerializeObject(ds);
             File.WriteAllText(destination, raw);
         }
@@ -79,8 +80,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// </summary>
         public struct DataStruct
         {
-            public string username;
-            public string password;
+            public string username { get; set; }
+            public string password { get; set; }
+            public Guid key { get; set; }
         }
 
         /// <summary>

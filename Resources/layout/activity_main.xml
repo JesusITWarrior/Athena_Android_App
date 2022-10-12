@@ -31,10 +31,12 @@
         android:background="@color/white"
         android:id="@+id/passwordLayout"
         android:layout_below="@id/usernameLayout"
-        android:hint="@string/PasswordPrompt">
+        android:hint="@string/PasswordPrompt"
+        app:passwordToggleEnabled="true">
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:id="@+id/password"
             />
     </com.google.android.material.textfield.TextInputLayout>

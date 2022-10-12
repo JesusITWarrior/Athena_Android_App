@@ -260,7 +260,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 switch (analyzingLog.dataName) {
                     //
                     case "Temperature":
-                        temp = Convert.ToInt32(analyzingLog.value);
+                        if (UserPreferences.isF)
+                            temp = Convert.ToInt32(analyzingLog.value);
+                        else
+                            temp = (int)((Convert.ToDouble(analyzingLog.value)-32) * 5/9);
                         break;
                     case "Door Open Status":
                         door = Convert.ToBoolean(analyzingLog.value);

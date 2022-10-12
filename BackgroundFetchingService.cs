@@ -117,7 +117,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             Notification.Builder notificationBuilder = new Notification.Builder(this, channelName);
 #pragma warning disable CS0618 // Type or member is obsolete
-            Notification notification = notificationBuilder.SetContentTitle(channelName)
+            Notification notification = notificationBuilder.SetDefaults(NotificationDefaults.All)
+                                                            .SetContentTitle(channelName)
                                                            .SetSmallIcon(Resource.Mipmap.ic_launcher_round)
                                                            .SetContentText("Your Fridge Door has been open for longer than a minute!")
                                                            .SetPriority((int)NotificationImportance.Max)
