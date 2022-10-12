@@ -8,40 +8,40 @@
     android:background="@drawable/bg_start"
     android:minWidth="25px"
     android:minHeight="25px">
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="200sp"
+  <com.google.android.material.textfield.TextInputLayout
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      android:layout_width="200sp"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_above="@id/passwordLayout"
+      android:background="@color/white"
+      android:id="@+id/usernameLayout"
+      android:hint="@string/UsernamePrompt">
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100sp"
-        android:layout_marginTop="250sp"
-        android:background="@color/white"
-        android:id="@+id/usernameLayout"
-        android:hint="@string/UsernamePrompt">
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/username"
+        android:id="@+id/username"
             />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="200sp"
+  </com.google.android.material.textfield.TextInputLayout>
+  <com.google.android.material.textfield.TextInputLayout
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      android:layout_width="200sp"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:background="@color/white"
+      android:id="@+id/passwordLayout"
+      android:layout_above="@id/RememberMe"
+      android:hint="@string/PasswordPrompt"
+      app:passwordToggleEnabled="true">
+    <com.google.android.material.textfield.TextInputEditText
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100sp"
-        android:background="@color/white"
-        android:id="@+id/passwordLayout"
-        android:layout_below="@id/usernameLayout"
-        android:hint="@string/PasswordPrompt"
-        app:passwordToggleEnabled="true">
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:id="@+id/password"
+        android:inputType="textPassword"
+        android:id="@+id/password"
             />
-    </com.google.android.material.textfield.TextInputLayout>
+  </com.google.android.material.textfield.TextInputLayout>
 
-    <!--<EditText
+  <!--<EditText
         android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,60 +52,53 @@
         android:textCursorDrawable="@color/black"
         android:textSize="12sp"/> -->
 
-    <CheckBox
-        android:text="Remember Me"
-        android:textColor="@color/white"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordLayout"
-        android:layout_marginLeft="100sp"
-        android:id="@+id/RememberMe" />
+  <CheckBox
+      android:text="Remember Me"
+      android:textColor="@color/white"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_above="@id/loginError"
+      android:layout_marginLeft="100sp"
+      android:id="@+id/RememberMe" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/red"
-        android:text="Username or Password is Incorrect"
-        android:id="@+id/loginError"
-        android:layout_below="@id/RememberMe"
-        android:gravity="center"
-        android:visibility="gone"/>
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceLarge"
+      android:textColor="@color/red"
+      android:text="Username or Password is Incorrect"
+      android:id="@+id/loginError"
+      android:layout_above="@id/LoginButton"
+      android:gravity="center"
+      android:visibility="gone"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/LoginButton"
-        android:layout_below="@id/loginError"/>
+  <Button
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Login"
+      android:id="@+id/LoginButton"
+      android:layout_centerInParent="true"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No account? No problemo."
-        android:textSize="15sp"
-        android:textColor="@color/white"
-        android:gravity="center"
-        android:layout_below="@id/LoginButton"
-        android:id="@+id/reg1"/>
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="No account? No problemo."
+      android:textSize="15sp"
+      android:textColor="@color/white"
+      android:gravity="center"
+      android:layout_below="@id/LoginButton"
+      android:id="@+id/reg1"/>
 
-    <Button
-        android:layout_width="100sp"
-        android:layout_height="50sp"
-        android:id="@+id/registration"
-        android:background="@color/colorAccent"
-        android:text="Register Here!"
-        android:shadowColor="@color/black"
-        android:textColor="@color/white"
-        android:layout_below="@id/reg1"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="5sp"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="Try me!"
-        android:id="@+id/testButton"/>
+  <Button
+      android:layout_width="100sp"
+      android:layout_height="50sp"
+      android:id="@+id/registration"
+      android:background="@color/colorAccent"
+      android:text="Register Here!"
+      android:shadowColor="@color/black"
+      android:textColor="@color/white"
+      android:layout_below="@id/reg1"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="5sp"/>
 
 </RelativeLayout>

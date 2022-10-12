@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_start">
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Would you like to connect your ATHENA?"
+      android:textColor="@color/white"
+      android:textAppearance="?android:attr/textAppearanceLarge"
+      android:textSize="30sp"
+      android:gravity="center"
+      android:layout_marginTop="250sp"
+      android:id="@+id/pairPrompt"/>
+
+  <Button
+      android:layout_width="200sp"
+      android:layout_height="100sp"
+      android:id="@+id/accept"
+      android:background="@color/colorAccent"
+      android:text="Yes"
+      android:shadowColor="@color/black"
+      android:textColor="@color/white"
+      android:layout_below="@id/pairPrompt"
+      android:layout_alignParentLeft="true"
+      android:layout_marginLeft="75sp"
+      android:layout_marginTop="25sp"/>
+
+  <Button
+      android:layout_width="200sp"
+      android:layout_height="100sp"
+      android:id="@+id/decline"
+      android:background="@color/colorAccent"
+      android:text="No"
+      android:shadowColor="@color/black"
+      android:textColor="@color/white"
+      android:layout_below="@id/pairPrompt"
+      android:layout_toRightOf="@id/accept"
+      android:layout_alignBaseline="@id/accept"
+      android:layout_marginLeft="25sp"/>
+
+</RelativeLayout>

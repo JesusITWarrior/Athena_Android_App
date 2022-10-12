@@ -40,35 +40,39 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //otherwise, it takes the user through the login/registration process.
             else
             {*/
+            UserPreferences.SetViewSize(this);
+            if(UserPreferences.widthWindowSize == UserPreferences.WindowSize.COMPACT)
                 SetContentView(Resource.Layout.activity_main);
-                //Log In Button variable
-                Button loginButton = FindViewById<Button>(Resource.Id.LoginButton);
-                loginButton.Click += (o, e) =>
+            else
+                SetContentView(Resource.Layout.activity_main);
+            //Log In Button variable
+            Button loginButton = FindViewById<Button>(Resource.Id.LoginButton);
+            loginButton.Click += (o, e) =>
+            {
+                //When login button is clicked, it gets the username and password components, sets the credentials, checks the remember me box, and then attempts a login with the input credentials.
+                string user = FindViewById<TextView>(Resource.Id.username).Text;
+                string pass = FindViewById<TextView>(Resource.Id.password).Text;
+                UserData.SetCredentials(user, pass);
+                //Checks the state of Remember Me box, if it's checked, it writes a cred file, otherwise, it continues
+                CheckBox rm = FindViewById<CheckBox>(Resource.Id.RememberMe);
+                if (rm.Checked)
                 {
-                    //When login button is clicked, it gets the username and password components, sets the credentials, checks the remember me box, and then attempts a login with the input credentials.
-                    string user = FindViewById<TextView>(Resource.Id.username).Text;
-                    string pass = FindViewById<TextView>(Resource.Id.password).Text;
-                    UserData.SetCredentials(user, pass);
-                    //Checks the state of Remember Me box, if it's checked, it writes a cred file, otherwise, it continues
-                    CheckBox rm = FindViewById<CheckBox>(Resource.Id.RememberMe);
-                    if (rm.Checked)
-                    {
-                        UserData.SaveLoginInfo();
-                    }
-                    Login();
-                };
-                //Registration Button variable
-                Button registrationButton = FindViewById<Button>(Resource.Id.registration);
-                registrationButton.Click += (o, e) =>
-                {
-                    //Opens new Registration Activity
-                    StartActivity(typeof(RegistrationActivity));
-                };
-                Button testButton = FindViewById<Button>(Resource.Id.testButton);
-                testButton.Click += (o,e) =>
-                {
-                    StartActivity(typeof(Test));
-                };
+                    UserData.SaveLoginInfo();
+                }
+                Login();
+            };
+            //Registration Button variable
+            Button registrationButton = FindViewById<Button>(Resource.Id.registration);
+            registrationButton.Click += (o, e) =>
+            {
+                //Opens new Registration Activity
+                StartActivity(typeof(RegistrationActivity));
+            };
+            /*Button testButton = FindViewById<Button>(Resource.Id.testButton);
+            testButton.Click += (o,e) =>
+            {
+                StartActivity(typeof(Test));
+            };*/
             //}
         }
 
@@ -184,7 +188,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             test.Click += async (o,e) =>
             {
                 await System.Threading.Tasks.Task.Delay(3000);
-                string channelName = "Fridge Door Alarm!";
+                string channelName = "Test Button Pressed!!!";
                 NotificationChannel chan = new NotificationChannel(channelName, channelName, NotificationImportance.Max);
                 NotificationManager manager = (NotificationManager)GetSystemService(Context.NotificationService);
                 manager.CreateNotificationChannel(chan);
@@ -193,7 +197,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
                 Notification notification = notificationBuilder.SetContentTitle(channelName)
                                                                .SetSmallIcon(Resource.Mipmap.ic_launcher_round)
-                                                               .SetContentText("Your Fridge Door has been open for longer than a minute!")
+                                                               .SetContentText("You clicked the notification button.")
                                                                .SetOngoing(false)
                                                                .SetChannelId(channelName)
                                                                .SetAutoCancel(true)

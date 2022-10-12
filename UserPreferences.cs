@@ -15,7 +15,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
     internal static class UserPreferences
     {
+        public enum WindowSize { COMPACT, MEDIUM, EXPANDED}
         private const string configFileName = "UserSettings.athena";
+        public static WindowSize widthWindowSize;
+        public static WindowSize heightWindowSize;
         public static int temperature;
         public static bool isF;
         //public static int 
@@ -31,7 +34,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
             else
             {
-                File.Create(destination);
                 temperature = 0;
                 isF = true;
                 WriteToFile();
@@ -45,6 +47,39 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             ups.isF = isF;
             string payload = JsonConvert.SerializeObject(ups);
             File.WriteAllText(Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), configFileName),payload);
+        }
+
+        public static void SetViewSize(Context ctx)
+        {
+            float height = (ctx.Resources.DisplayMetrics.HeightPixels / ctx.Resources.DisplayMetrics.Density);
+            float width = (ctx.Resources.DisplayMetrics.WidthPixels / ctx.Resources.DisplayMetrics.Density);
+
+            if (width < 600f)
+            {
+                widthWindowSize = WindowSize.COMPACT;
+            }
+            else if (width < 840f)
+            {
+                widthWindowSize = WindowSize.MEDIUM;
+            }
+            else
+            {
+                widthWindowSize = WindowSize.EXPANDED;
+            }
+            
+
+            if (height < 480f)
+            {
+                heightWindowSize = WindowSize.COMPACT;
+            }
+            else if (height < 900f)
+            {
+                heightWindowSize = WindowSize.MEDIUM;
+            }
+            else
+            {
+                heightWindowSize = WindowSize.EXPANDED;
+            }
         }
 
         private struct UserPrefStruct

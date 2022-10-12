@@ -4629,13 +4629,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 			public const int WifiCredentialPopup = 2131427396;
 			
 			// aapt resource value: 0x7F0B0045
-			public const int WifiCredentials = 2131427397;
+			public const int WifiNetworkListLayout = 2131427397;
 			
 			// aapt resource value: 0x7F0B0046
-			public const int WifiNetworkListLayout = 2131427398;
-			
-			// aapt resource value: 0x7F0B0047
-			public const int wifisearch = 2131427399;
+			public const int wifisearch = 2131427398;
 			
 			static Layout()
 			{
