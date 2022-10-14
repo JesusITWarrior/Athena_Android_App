@@ -14,7 +14,7 @@
       android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
       android:layout_above="@id/passwordLayout"
-      android:background="@color/white"
+      android:background="@drawable/black_border"
       android:id="@+id/usernameLayout"
       android:hint="@string/UsernamePrompt">
     <com.google.android.material.textfield.TextInputEditText
@@ -28,7 +28,7 @@
       android:layout_width="200sp"
       android:layout_height="wrap_content"
       android:layout_centerHorizontal="true"
-      android:background="@color/white"
+      android:background="@drawable/black_border"
       android:id="@+id/passwordLayout"
       android:layout_above="@id/RememberMe"
       android:hint="@string/PasswordPrompt"
