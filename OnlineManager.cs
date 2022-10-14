@@ -103,9 +103,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     class DatabaseManager
     {
         // The Azure Cosmos DB endpoint for running this sample.
-        private static readonly string EndpointUri = "https://iapyxretrofitapp.documents.azure.com:443/";
+        private static readonly string EndpointUri = "https://capstonetamu.documents.azure.com:443/";
         // The primary key for the Azure Cosmos account.
-        private static readonly string PrimaryKey = "zGVFeZfK22QFtw7H8YMQ3ms6sy0UGpniSwzD2E0SmcCDwK45lSSYwGQideqvwY2PK9VS0qKkBL4myDG5Obqepg==";
+        private static readonly string PrimaryKey = "qOCK60HdQU4oEJx2xop6D4DI4tqXu7EotJxvoOuUFH6DKJlDf546ZHH8aHAEM6CEtm4r5rc0MrEm0BA2HO90jQ==";
 
         // The Cosmos client instance
         private static CosmosClient client;
