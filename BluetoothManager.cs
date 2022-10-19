@@ -144,7 +144,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// </returns>
         private static List<string> WifiConvert(string raw)
         {
-            List<string> wifiList = new List<string>();
+            List<string> wifiList = JsonConvert.DeserializeObject<List<string>>(raw);
+            /*List<string> wifiList = new List<string>();
             //Until the raw variable is empty, it will add more networks to the list
             while(raw != "")
             {
@@ -165,7 +166,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 item = item.Replace("\"","");
                 if(item.TrimEnd() !="" && !wifiList.Contains(item))
                     wifiList.Add(item);
-            }
+            }*/
             return wifiList;
         }
 
