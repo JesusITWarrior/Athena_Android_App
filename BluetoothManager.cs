@@ -23,6 +23,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     {
         public delegate void WifiHandler(List<string> list);
         public static event WifiHandler SwitchToWifi;
+        public static event EventHandler ResetBluetooth;
         public static BluetoothAdapter adapter;
         public static BluetoothDevice connectedDevice = null;
         static string uniqueIdentifier;
@@ -37,7 +38,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public static void Connect(string deviceAddress)
         {
             //Checks if Athena has been paired previously and pairs based on that
-            connectedDevice = adapter.BondedDevices.FirstOrDefault(d => d.Address.Equals(deviceAddress));
+            //connectedDevice = adapter.BondedDevices.FirstOrDefault(d => d.Address.Equals(deviceAddress));
             //If above line fails, it creates a bond to pair and then connect
             if(connectedDevice == null)
             {
@@ -46,7 +47,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     if(device.Address == deviceAddress)
                     {
                         connectedDevice = device;
-                        connectedDevice.CreateBond();
+                        //connectedDevice.CreateBond();
                         break;
                     }
                 }
@@ -82,7 +83,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 {
                     socket.Connect();
                     worked = true;
-                } catch (Exception e) {
+                } catch {
                     connectionRetries++;
                     if (connectionRetries == 5)
                         return;
@@ -106,6 +107,11 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             List<string> networks = WifiConvert(wifiRaw);
             //Invoke Wifi-switching event so Activity can switch to wifi-credential input
             SwitchToWifi.Invoke(networks);
+        }
+
+        public static void InvokeBluetoothReset()
+        {
+            ResetBluetooth.Invoke(1, EventArgs.Empty);
         }
 
         /// <summary>

@@ -45,6 +45,11 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            SetUpBluetoothView(this, EventArgs.Empty);
+        }
+
+        private void SetUpBluetoothView(object o, EventArgs e)
+        {
             SetContentView(Resource.Layout.bluetoothsearch);
 
             loading = new Dialog(this);
@@ -60,7 +65,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             //Subscribes SwitchToWifi event to DiscoveryFinished Function because when devices is connected, phone should stop looking for other devices.
             BluetoothManager.SwitchToWifi += DiscoveryFinished;
-            
+            BluetoothManager.ResetBluetooth += SetUpBluetoothView;
+
             //Checks if the bluetooth adapater is on or off
             if (!BluetoothManager.adapter.IsEnabled)
                 //Bluetooth is off, should ask user to turn it on
@@ -149,20 +155,28 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <param name="networks"></param>
         private void DiscoveryFinished(List<string> networks)
         {
-            UnregisterReceiver(BluetoothManager.receiver);
-            BluetoothManager.receiver = null;
+            try
+            {
+                UnregisterReceiver(BluetoothManager.receiver);
+                BluetoothManager.receiver = null;
 
-            //Sets XML to WiFi searching layout
-            SetContentView(Resource.Layout.wifisearch);
-            loading.Dismiss();
-            loading.Hide();
-            //Assigns all views and necessary view adapters
-            viewableNetworks = FindViewById<ListView>(Resource.Id.wifiNetworks);
-            wifiListViewAdapter = new WifiListViewAdapter(this, Resource.Layout.WifiNetworkListLayout, networks);
-            viewableNetworks.Adapter = wifiListViewAdapter;
+                //Sets XML to WiFi searching layout
+                SetContentView(Resource.Layout.wifisearch);
+                loading.Dismiss();
+                loading.Hide();
+                //Assigns all views and necessary view adapters
+                viewableNetworks = FindViewById<ListView>(Resource.Id.wifiNetworks);
+                wifiListViewAdapter = new WifiListViewAdapter(this, Resource.Layout.WifiNetworkListLayout, networks);
+                viewableNetworks.Adapter = wifiListViewAdapter;
 
-            //Subscribes WifiActivityTime to the Wifi function
-            WifiListViewAdapter.WifiActivityTime += Wifi;
+                //Subscribes WifiActivityTime to the Wifi function
+                WifiListViewAdapter.WifiActivityTime += Wifi;
+            }
+            catch
+            {
+                Toast.MakeText(this, "Bluetooth Issue, please try again...", ToastLength.Short).Show();
+                BluetoothManager.InvokeBluetoothReset();
+            }
         }
 
         /// <summary>
@@ -220,70 +234,80 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <param name="name">Name of the WiFi network</param>
         private void Wifi(string name)
         {
-            loginDialog = new Dialog(this);
-            loginDialog.SetContentView(Resource.Layout.WifiCredentialPopup);
-            TextView wifiName = loginDialog.FindViewById<TextView>(Resource.Id.wifiName);
-            TextView user = loginDialog.FindViewById<TextView>(Resource.Id.usernameInput);
-            TextView password = loginDialog.FindViewById<TextView>(Resource.Id.passwordInput);
-            wifiName.Text = name;
-            Button connect = loginDialog.FindViewById<Button>(Resource.Id.connectButton);
-            Button cancel = loginDialog.FindViewById<Button>(Resource.Id.cancelButton);
+            try
+            {
+                loginDialog = new Dialog(this);
+                loginDialog.SetContentView(Resource.Layout.WifiCredentialPopup);
+                TextView wifiName = loginDialog.FindViewById<TextView>(Resource.Id.wifiName);
+                TextView user = loginDialog.FindViewById<TextView>(Resource.Id.usernameInput);
+                TextView password = loginDialog.FindViewById<TextView>(Resource.Id.passwordInput);
+                wifiName.Text = name;
+                Button connect = loginDialog.FindViewById<Button>(Resource.Id.connectButton);
+                Button cancel = loginDialog.FindViewById<Button>(Resource.Id.cancelButton);
 
-            connect.Click += (o,e) => {
-                loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
-                loading.Show();
-                BluetoothManager.WifiStruct cred = new BluetoothManager.WifiStruct();
-                cred.SSID = wifiName.Text;
-                //If identity is empty, it passes null to device, otherwise it trims and sends the identity... will possibly remove
-                cred.identity = (user.Text.Trim() == "") ? null : user.Text.Trim();
-                cred.key = password.Text.Trim();
-                //JSON payload created from WifiStruct "cred" object
-                string auth = Newtonsoft.Json.JsonConvert.SerializeObject(cred);
-
-                BluetoothManager.SendData(auth);
-                bool gotGoodResponse = false;
-                //Waits until it receives a confirmation instead of a Raw WifiList from the board
-                while (!gotGoodResponse)
+                connect.Click += (o, e) =>
                 {
-                    //Attempts to convert response to a boolean
-                    try
-                    {
-                        //Receives data from Athena device
-                        string confirmation = System.Threading.Tasks.Task.Run(async () => await BluetoothManager.ReceiveData()).Result;
-                        //Attempt to convert data to Boolean
-                        bool isWorking = Convert.ToBoolean(confirmation);
-                        //If we got here, that means it's a boolean
-                        gotGoodResponse = true;
-                        loading.Dismiss();
-                        loading.Hide();
-                        //If we received a successful connection: close up shop
-                        if (isWorking)
-                        {
-                            BluetoothManager.socket.Close();
-                            loginDialog.Dismiss();
-                            loginDialog.Hide();
-                            Toast.MakeText(this, "Board Successfully Connected to Wifi", ToastLength.Short).Show();
-                            Finish();
-                        }
-                        //We got a failure, which means device couldn't connect
-                        else
-                        {
-                            //Throw exception up here
-                        }
-                    }
-                    //Response is not a boolean, so loop needs to be repeated
-                    catch (Exception ex)
-                    {
-                        gotGoodResponse = false;
-                    }
-                }
-            };
+                    loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
+                    loading.Show();
+                    BluetoothManager.WifiStruct cred = new BluetoothManager.WifiStruct();
+                    cred.SSID = wifiName.Text;
+                    //If identity is empty, it passes null to device, otherwise it trims and sends the identity... will possibly remove
+                    cred.identity = (user.Text.Trim() == "") ? null : user.Text.Trim();
+                    cred.key = password.Text.Trim();
+                    //JSON payload created from WifiStruct "cred" object
+                    string auth = Newtonsoft.Json.JsonConvert.SerializeObject(cred);
 
-            cancel.Click += (o, e) => {
-                loginDialog.Dismiss();
-                loginDialog.Hide();
-            };
-            loginDialog.Show();
+                    BluetoothManager.SendData(auth);
+                    bool gotGoodResponse = false;
+                    //Waits until it receives a confirmation instead of a Raw WifiList from the board
+                    while (!gotGoodResponse)
+                    {
+                        //Attempts to convert response to a boolean
+                        try
+                        {
+                            //Receives data from Athena device
+                            string confirmation = System.Threading.Tasks.Task.Run(async () => await BluetoothManager.ReceiveData()).Result;
+                            //Attempt to convert data to Boolean
+                            bool isWorking = Convert.ToBoolean(confirmation);
+                            //If we got here, that means it's a boolean
+                            gotGoodResponse = true;
+                            loading.Dismiss();
+                            loading.Hide();
+                            //If we received a successful connection: close up shop
+                            if (isWorking)
+                            {
+                                BluetoothManager.socket.Close();
+                                loginDialog.Dismiss();
+                                loginDialog.Hide();
+                                Toast.MakeText(this, "Board Successfully Connected to Wifi", ToastLength.Short).Show();
+                                Finish();
+                            }
+                            //We got a failure, which means device couldn't connect
+                            else
+                            {
+                                //Throw exception up here
+                            }
+                        }
+                        //Response is not a boolean, so loop needs to be repeated
+                        catch
+                        {
+                            gotGoodResponse = false;
+                        }
+                    }
+                };
+
+                cancel.Click += (o, e) =>
+                {
+                    loginDialog.Dismiss();
+                    loginDialog.Hide();
+                };
+                loginDialog.Show();
+            }
+            catch
+            {
+                Toast.MakeText(this, "Bluetooth Issue, please try again...", ToastLength.Short).Show();
+                BluetoothManager.InvokeBluetoothReset();
+            }
         }
 
         /// <summary>
@@ -315,6 +339,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     {
         private LayoutInflater layinf;
         private List<BluetoothDevice> devices;
+        private static event EventHandler BluetoothReset;
         private int resourceId;
         Context ctx;
 
@@ -370,8 +395,16 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     OnboardingActivity.loading.Show();
                     //When clicked, it should attempt a bluetooth socket connection
                     Toast.MakeText(ctx, "Conntecting to "+deviceName.Text, ToastLength.Short).Show();
-                    BluetoothManager.Connect(deviceAddress.Text);
-                    Toast.MakeText(ctx, "Connection successful. Getting WiFi networks.", ToastLength.Short).Show();
+                    try
+                    {
+                        BluetoothManager.Connect(deviceAddress.Text);
+                        Toast.MakeText(ctx, "Connection successful. Getting WiFi networks.", ToastLength.Short).Show();
+                    }
+                    catch
+                    {
+                        Toast.MakeText(ctx, "Bluetooth Issue, please try again...", ToastLength.Short).Show();
+                        BluetoothManager.InvokeBluetoothReset();
+                    }
                 };
 
                 deviceName.Text = device.Name;

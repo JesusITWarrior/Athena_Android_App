@@ -66,7 +66,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             registrationButton.Click += (o, e) =>
             {
                 //Opens new Registration Activity
-                StartActivity(typeof(RegistrationActivity));
+                StartActivityForResult(typeof(RegistrationActivity), 1);
             };
             /*Button testButton = FindViewById<Button>(Resource.Id.testButton);
             testButton.Click += (o,e) =>
@@ -314,5 +314,20 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             this.SendBroadcast(broadcastIntent);
             base.OnDestroy();
         }*/
+
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == 1) {
+                if (resultCode == Result.Ok)
+                {
+                    ToContent();
+                }
+                else
+                {
+                    Toast.MakeText(this, "Registration Failed", ToastLength.Short).Show();
+                }
+            }
+        }
     }
 }

@@ -68,12 +68,14 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     accept.Click += (o, e) => {
                         //User accepted onboarding, which will start onboarding activity, and close the registration
                         StartActivity(typeof(OnboardingActivity));
+                        SetResult(Result.Ok);
                         Finish();
                     };
 
                     decline.Click += (o, e) =>
                     {
                         //User declined onboarding, which will close registration
+                        SetResult(Result.Ok);
                         Finish();
                     };
                 }
