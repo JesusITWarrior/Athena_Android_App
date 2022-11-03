@@ -4290,25 +4290,31 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 			public const int visible_removing_fragment_view_tag = 2131231007;
 			
 			// aapt resource value: 0x7F080120
-			public const int wifiIcon = 2131231008;
+			public const int warningIcon = 2131231008;
 			
 			// aapt resource value: 0x7F080121
-			public const int wifiName = 2131231009;
+			public const int warningTitle = 2131231009;
 			
 			// aapt resource value: 0x7F080122
-			public const int wifiNetworks = 2131231010;
+			public const int wifiIcon = 2131231010;
 			
 			// aapt resource value: 0x7F080123
-			public const int wifiSelectButton = 2131231011;
+			public const int wifiName = 2131231011;
 			
 			// aapt resource value: 0x7F080124
-			public const int wifiTitle = 2131231012;
+			public const int wifiNetworks = 2131231012;
 			
 			// aapt resource value: 0x7F080125
-			public const int withText = 2131231013;
+			public const int wifiSelectButton = 2131231013;
 			
 			// aapt resource value: 0x7F080126
-			public const int wrap_content = 2131231014;
+			public const int wifiTitle = 2131231014;
+			
+			// aapt resource value: 0x7F080127
+			public const int withText = 2131231015;
+			
+			// aapt resource value: 0x7F080128
+			public const int wrap_content = 2131231016;
 			
 			static Id()
 			{
@@ -4629,16 +4635,19 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 			public const int test = 2131427394;
 			
 			// aapt resource value: 0x7F0B0043
-			public const int whole_screen_loading_symbol = 2131427395;
+			public const int TurnOnBluetoothPopup = 2131427395;
 			
 			// aapt resource value: 0x7F0B0044
-			public const int WifiCredentialPopup = 2131427396;
+			public const int whole_screen_loading_symbol = 2131427396;
 			
 			// aapt resource value: 0x7F0B0045
-			public const int WifiNetworkListLayout = 2131427397;
+			public const int WifiCredentialPopup = 2131427397;
 			
 			// aapt resource value: 0x7F0B0046
-			public const int wifisearch = 2131427398;
+			public const int WifiNetworkListLayout = 2131427398;
+			
+			// aapt resource value: 0x7F0B0047
+			public const int wifisearch = 2131427399;
 			
 			static Layout()
 			{
