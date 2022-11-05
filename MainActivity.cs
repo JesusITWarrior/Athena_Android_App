@@ -20,7 +20,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class MainActivity : AppCompatActivity
     {
-        List<Status> recordedStatus;
+        StatusDB recordedStatus;
         ProgressBar nonInvasiveLoadingIcon;
         private BackgroundFetchingService fetchService;
         private Intent fetchIntent;
@@ -216,13 +216,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// </summary>
         private async void FetchStatusFromDB()
         {
-            StatusDB databaseList;
             //Fetches items from database
-            databaseList = await DatabaseManager.ReadStatusFromDB();
+            recordedStatus = await DatabaseManager.ReadStatusFromDB(true);
             //Sets items into the global variable for use
-            recordedStatus = databaseList.loggedStatus;
-            if (recordedStatus == null)
-                recordedStatus = new List<Status>();
+            //recordedStatus = databaseList.loggedStatus;
 
             UpdateView();
         }
@@ -252,31 +249,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             ImageView shelf = FindViewById<ImageView>(Resource.Id.shelfPic);
             nonInvasiveLoadingIcon = FindViewById<ProgressBar>(Resource.Id.nonInvasiveLoading);
             nonInvasiveLoadingIcon.Visibility = Android.Views.ViewStates.Visible;
-            int? temp=null;
-            bool door=false;
-            string pic=null;
-
-            //Sifts through recordedStatus and assigns the values needed for all Views
-            for (int i = 0; i < recordedStatus.Count;i++)
-            {
-                //Each Status should have name and value. This checks and assigns the correct values by names
-                Status analyzingLog = recordedStatus[i];
-                switch (analyzingLog.dataName) {
-                    //
-                    case "Temperature":
-                        if (UserPreferences.isF)
-                            temp = Convert.ToInt32(analyzingLog.value);
-                        else
-                            temp = (int)((Convert.ToDouble(analyzingLog.value)-32) * 5/9);
-                        break;
-                    case "Door Open Status":
-                        door = Convert.ToBoolean(analyzingLog.value);
-                        break;
-                    case "Picture":
-                        pic = Convert.ToString(analyzingLog.value);
-                        break;
-                }
-            }
+            int temp=recordedStatus.Temperature;
+            bool door=recordedStatus.DoorOpenStatus;
+            string pic=recordedStatus.Picture;
 
             //Formats the Views to a more readable format with the new values
             temperature.Text = temp+" F";

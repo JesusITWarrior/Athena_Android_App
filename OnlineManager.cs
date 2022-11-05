@@ -102,6 +102,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     /// </summary>
     class DatabaseManager
     {
+        public enum RecordType
+        {
+            INV,
+            PIC,
+            STATUS
+        }
         // The Azure Cosmos DB endpoint for running this sample.
         private static readonly string EndpointUri = "https://capstonetamu.documents.azure.com:443/";
         // The primary key for the Azure Cosmos account.
@@ -288,26 +294,23 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// </summary>
         /// <param name="inventory">The list of items to write to the database</param>
         /// <returns></returns>
-        public static async Task WriteToDB(List<Item> inventory)
+        public static async Task WriteToDB(InventoryDB inventory)
         {
             try
             {
+                string itemsToBeSelected = "SELECT r.id FROM r ";
+                string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'inventory\'";
                 //Creates item logging object and populates it
-                ItemDB items = new ItemDB();
-                //items.id = UserData.username + " Inventory";
-                items.id = UserData.key +" Inventory";
-                items.updatedTime = System.DateTime.Now;
-                items.currentInventory = inventory;
 
                 //Attempts to replace item if it exists, or else it creates a new item
-                ItemResponse<ItemDB> response;
+                ItemResponse<InventoryDB> response;
                 try
                 {
-                    response = await container.ReplaceItemAsync<ItemDB>(items, items.id);
+                    response = await container.ReplaceItemAsync<InventoryDB>(inventory, inventory.id);
                 }
                 catch (CosmosException ce)
                 {
-                    response = await container.CreateItemAsync<ItemDB>(items);
+                    response = await container.CreateItemAsync<InventoryDB>(inventory);
                 }
             }
             catch (Exception ce)
@@ -317,39 +320,42 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
         }
 
-        /// <summary>
-        /// Reads Inventory List from Database
-        /// </summary>
-        /// <returns>
-        /// ItemDB = object with database list attached
-        /// </returns>
-        public static async Task<ItemDB> ReadItemsFromDB()
+        public static async Task<InventoryDB> ReadInventoryItemsFromDB()
         {
+            InventoryDB inventory = new InventoryDB();
+            string itemsToBeSelected = "SELECT r.id, r.inventory FROM r ";
+            string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'inventory\'";
             try
             {
                 //Queries the database for the inventory list
-                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.key + " Inventory\"";
+                string rawQuery = itemsToBeSelected + where;
                 //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Inventory\"";
                 QueryDefinition query = new QueryDefinition(rawQuery);
 
-                //Gets result of query
-                using FeedIterator<ItemDB> queryResult = container.GetItemQueryIterator<ItemDB>(query);
 
+
+                //Gets result of query
+                using FeedIterator<InvGuidAndItems> queryResult = container.GetItemQueryIterator<InvGuidAndItems>(query);
                 //Creating new itemDB object to populate with results
-                ItemDB items = new ItemDB();
+                InvGuidAndItems items = new InvGuidAndItems();
 
                 //Populates itemDB object from results
                 while (queryResult.HasMoreResults)
                 {
-                    FeedResponse<ItemDB> resultSet = await queryResult.ReadNextAsync();
-                    foreach (ItemDB item in resultSet)
+                    FeedResponse<InvGuidAndItems> resultSet = await queryResult.ReadNextAsync();
+                    foreach (InvGuidAndItems item in resultSet)
                     {
-                        items = item;
+                        inventory.id = item.id;
+                        inventory.inventory = item.inventory;
                     }
                 }
 
+                if(inventory.id == null)
+                {
+                    inventory.id = Guid.NewGuid().ToString();
+                }
                 //Returns itemDB for processing
-                return items;
+                return inventory;
             }
             catch (Exception e)
             {
@@ -364,32 +370,64 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <returns>
         /// StatusDB = object with database status attached
         /// </returns>
-        public static async Task<StatusDB> ReadStatusFromDB()
+        public static async Task<StatusDB> ReadStatusFromDB(bool fetchPictureToo, int entries=1)
         {
             try
             {
+                string itemsToBeSelected = "SELECT TOP "+entries+" r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
+                string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'status\'";
+                string order = " ORDER BY r.updatedTime DESC";
                 //Queries database for the status values
-                string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.key + " Status\"";
+                string rawQuery = itemsToBeSelected+where+order;
                 //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Status\"";
                 QueryDefinition query = new QueryDefinition(rawQuery);
 
+                StatusDB overall = new StatusDB();
                 //Gets result of query
-                using FeedIterator<StatusDB> queryResult = container.GetItemQueryIterator<StatusDB>(query);
+                using (FeedIterator<Status> queryResult = container.GetItemQueryIterator<Status>(query)) {
 
-                //Sets up statusDB object to be populated
-                StatusDB status = new StatusDB();
+                    //Sets up statusDB object to be populated
 
-                //Populates statusDB object
-                while (queryResult.HasMoreResults)
-                {
-                    FeedResponse<StatusDB> resultSet = await queryResult.ReadNextAsync();
-                    foreach (StatusDB item in resultSet)
+                    //Populates statusDB object
+                    while (queryResult.HasMoreResults)
                     {
-                        status = item;
+                        FeedResponse<Status> resultSet = await queryResult.ReadNextAsync();
+                        foreach (Status item in resultSet)
+                        {
+                            overall.updatedTime = item.updatedTime;
+                            overall.DoorOpenStatus = item.DoorOpenStatus;
+                            overall.Temperature = item.Temperature;
+                        }
                     }
                 }
+                if (fetchPictureToo)
+                {
+                    PictureDB p = new PictureDB();
+                    itemsToBeSelected = "SELECT r.Picture FROM r ";
+                    where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'picture\'";
+
+                    rawQuery = itemsToBeSelected + where + order;
+                    query = new QueryDefinition(rawQuery);
+
+                    using (FeedIterator<PictureDB> queryResult = container.GetItemQueryIterator<PictureDB>(query))
+                    {
+                        while (queryResult.HasMoreResults)
+                        {
+                            FeedResponse<PictureDB> resultSet = await queryResult.ReadNextAsync();
+                            foreach (PictureDB item in resultSet)
+                            {
+                                overall.Picture = item.Picture;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    overall.Picture = null;
+                }
+
                 //Returns statusDB object for processing
-                return status;
+                return overall;
             }
             catch(Exception e)
             {

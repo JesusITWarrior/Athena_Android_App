@@ -31,23 +31,22 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         }
     }
 
-    /// <summary>
-    /// Basic Status object with name and value, used locally
-    /// </summary>
-    public class Status
+    public struct InvGuidAndItems
     {
-        public string dataName { get; set; }
-        public object value { get; set; }
+        public string id { get; set; }
+        public List<Item> inventory { get; set; }
     }
 
     /// <summary>
     /// Item object used for logging to the database. Holds id, time updated, and list of inventory
     /// </summary>
-    public class ItemDB
+    public class InventoryDB
     {
         public string id { get; set; }
+        public readonly string accountID = UserData.key.ToString();
+        public readonly string recordType = "inventory";
         public DateTime updatedTime { get; set; }
-        public List<Item> currentInventory { get; set; }
+        public List<Item> inventory { get; set; }
     }
 
     /// <summary>
@@ -58,15 +57,30 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public DateTime updatedTime { get; set; }
         public List<Item> currentInventory{ get; set; }
     }
+    /// <summary>
+    /// Basic Status object with name and value, used locally
+    /// </summary>
+    public struct Status
+    {
+        public DateTime updatedTime { get; set; }
+        public bool DoorOpenStatus { get; set; }
+        public int Temperature { get; set; }
+    }
+
+    public struct PictureDB
+    {
+        public string Picture { get; set; }
+    }
 
     /// <summary>
     /// Status object used for logging to database. Holds id, time updated, and List of status values
     /// </summary>
     public class StatusDB
     {
-        public string id { get; set; }
         public DateTime updatedTime { get; set; }
-        public List<Status> loggedStatus { get; set; }
+        public bool DoorOpenStatus { get; set; }
+        public int Temperature { get; set; }
+        public string Picture { get; set; }
     }
 
     /// <summary>

@@ -64,22 +64,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 bool doorAlarm = false;
                 while (instance == this)
                 {
-                    StatusDB dbStatus = await DatabaseManager.ReadStatusFromDB();
-                    List<Status> status = dbStatus.loggedStatus;
-                    int temp;
-                    bool door=false;
-                    for(int i = 0; i < status.Count; i++)
-                    {
-                        switch (status[i].dataName)
-                        {
-                            case "Temperature":
-                                temp = Convert.ToInt32(status[i].value);
-                                break;
-                            case "Door Open Status":
-                                door = Convert.ToBoolean(status[i].value);
-                                break;
-                        }
-                    }
+                    StatusDB dbStatus = await DatabaseManager.ReadStatusFromDB(false);
+                    int temp = dbStatus.Temperature;
+                    bool door= dbStatus.DoorOpenStatus;
                     if (door)
                     {
                         if(timer >= 60)

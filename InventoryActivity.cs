@@ -21,7 +21,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     {
         
         string filename = "inv-list.txt";
-        List<Item> inventory;
+        InventoryDB inventory;
         private ListView lv;
         Dialog loading;
         
@@ -44,7 +44,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             addButton.Click += AddNewItem;
 
             lv = FindViewById<ListView>(Resource.Id.inventory);
-            inventory = new List<Item>();
 
             loading = new Dialog(this);
             loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
@@ -52,11 +51,14 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             //Initializes most up-to-date list
             InitList();
-            //As long as there is an inventory, it will update inventory. Otherwise, it will hide it.
-            if (inventory.Count != 0)
+            //As long as there is an inventory.inventory, it will update inventory.inventory. Otherwise, it will hide it.
+            if (inventory.inventory != null)
             {
-                ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory);
-                lv.Adapter = adapter;
+                if (inventory.inventory.Count != 0)
+                {
+                    ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory.inventory);
+                    lv.Adapter = adapter;
+                }
             }
         }
 
@@ -70,7 +72,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //ItemFile struct for reading
             ItemFile itemFile = new ItemFile();
             //ItemDB class for reading
-            ItemDB databaseList = new ItemDB();
+            inventory = new InventoryDB();
             var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
             //If the file exists, then read it.
             if (File.Exists(destination))
@@ -95,9 +97,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Try to fetch list from database
                 if (!DatabaseManager.isOnline)
                     await DatabaseManager.GetLogDBInfo();
-                databaseList = await DatabaseManager.ReadItemsFromDB();
+                inventory = await DatabaseManager.ReadInventoryItemsFromDB();
                 //TODO: Show loading
-                dbTime = databaseList.updatedTime;
+                dbTime = inventory.updatedTime;
             }
             catch (Exception e)
             {
@@ -106,13 +108,13 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
             //If we are online, we proceed with check as normal, updating list to be whatever is most recent up-to-date version is
             if (DatabaseManager.isOnline)
-                inventory = (fileTime >= dbTime) ? itemFile.currentInventory : databaseList.currentInventory;
+                inventory.inventory = (fileTime >= dbTime) ? itemFile.currentInventory : inventory.inventory;
             //Otherwise, we only use local file
             else
-                inventory = itemFile.currentInventory;
+                inventory.inventory = itemFile.currentInventory;
             
-            if (inventory == null)
-                inventory = new List<Item>();
+            if (inventory.inventory == null)
+                inventory.inventory = new List<Item>();
             
             //Adds all necessary events to each item and then makes sure the view is synchronized with the inventory file/database
             AddItemEvents();
@@ -134,7 +136,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //Creates ItemFile object for writing
             ItemFile itemFile = new ItemFile();
             itemFile.updatedTime = DateTime.Now;
-            itemFile.currentInventory = inventory;
+            itemFile.currentInventory = inventory.inventory;
 
             //Converts object to JSON string and writes/overwrites it to the file.
             string rawJson = JsonConvert.SerializeObject(itemFile);
@@ -152,25 +154,25 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Removes item from list entirely if it reaches 0
                 if (i.itemAmount == 0)
                 {
-                    inventory.Remove(i);
+                    inventory.inventory.Remove(i);
                 }
             }
-
+            inventory.updatedTime = DateTime.Now;
             //Writes all changes to local file and database
             WriteListToFile();
             DatabaseManager.WriteToDB(inventory);
 
             //Adapts ListView to entire list
-            ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory);
+            ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory.inventory);
             lv.Adapter = adapter;
         }
 
         /// <summary>
-        /// Subscribes all item events in inventory to UpdateView
+        /// Subscribes all item events in inventory.inventory to UpdateView
         /// </summary>
         public void AddItemEvents()
         {
-            foreach (Item i in inventory)
+            foreach (Item i in inventory.inventory)
             {
                 i.ItemChanged += UpdateView;
             }
@@ -187,12 +189,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             string itemToAdd = FindViewById<TextView>(Resource.Id.itemInput).Text;
             bool foundIt = false;
             //Checks to see really quickly if that item already exists
-            for (int i = 0; i < inventory.Count; i++)
+            for (int i = 0; i < inventory.inventory.Count; i++)
             {
                 //Found item with same name, adding one to it
-                if (inventory[i].itemName == itemToAdd)
+                if (inventory.inventory[i].itemName == itemToAdd)
                 {
-                    inventory[i].itemAmount++;
+                    inventory.inventory[i].itemAmount++;
                     foundIt = true;
                     break;
                 }
@@ -207,8 +209,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 newItem.ItemChanged += UpdateView;
 
                 //Adds and sorts item alphabetically to list
-                inventory.Add(newItem);
-                inventory.Sort((x,y) => string.Compare(x.itemName, y.itemName));
+                inventory.inventory.Add(newItem);
+                inventory.inventory.Sort((x,y) => string.Compare(x.itemName, y.itemName));
             }
 
             UpdateView();
