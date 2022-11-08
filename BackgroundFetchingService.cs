@@ -149,8 +149,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     {
         public override void OnReceive(Context context, Intent intent)
         {
-            Toast.MakeText(context, "Service restarted", ToastLength.Short).Show();
-            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+            //Toast.MakeText(context, "Service restarted", ToastLength.Short).Show();
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
                 context.StartForegroundService(new Intent(context, typeof(BackgroundFetchingService)));
             }

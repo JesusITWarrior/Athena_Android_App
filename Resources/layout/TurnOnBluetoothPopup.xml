@@ -14,7 +14,7 @@
             android:contentDescription="Icon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/wifi_icon"
+            android:src="@drawable/bluetooth_disabled"
             android:id="@+id/warningIcon"/>
         <TextView
             android:layout_width="wrap_content"

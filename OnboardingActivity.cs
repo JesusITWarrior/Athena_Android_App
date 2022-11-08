@@ -22,7 +22,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     /// <summary>
     /// Handles Onboarding Workflow
     /// </summary>
-    [Activity(Label = "OnboardingActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
+    [Activity(Label = "OnboardingActivity", ScreenOrientation = ScreenOrientation.Portrait)]
     public class OnboardingActivity : AppCompatActivity
     {
         //Bluetooth Device List UI Adapter     
@@ -82,9 +82,41 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <summary>
         /// Inform user that they need to turn on their Bluetooth.
         /// </summary>
-        private void TurnOnYourBluetooth()
+        private async void TurnOnYourBluetooth()
         {
-            
+            //Popup for bluetooth
+            Dialog bluetoothWarning = new Dialog(this);
+            bluetoothWarning.SetContentView(Resource.Layout.TurnOnBluetoothPopup);
+            bluetoothWarning.Show();
+            Button cancel = bluetoothWarning.FindViewById<Button>(Resource.Id.cancelButton);
+            Button turnOn = bluetoothWarning.FindViewById<Button>(Resource.Id.connectButton);
+            bool updated = false;
+            cancel.Click += (o,e) =>
+            {
+                bluetoothWarning.Dismiss();
+                bluetoothWarning.Hide();
+                updated = true;
+            };
+            turnOn.Click += (o, e) =>
+            {
+                BluetoothManager.adapter.Enable();
+                bluetoothWarning.Dismiss();
+                bluetoothWarning.Hide();
+                Toast.MakeText(this, "Bluetooth Should Be On Now", ToastLength.Short).Show();
+                updated = true;
+                //StartDiscovery();
+            };
+            while (!updated)
+            {
+                if (BluetoothManager.adapter.IsEnabled)
+                {
+                    updated = true;
+                }
+                else
+                {
+                    await Task.Delay(1500);
+                }
+            }
         }
 
         /// <summary>

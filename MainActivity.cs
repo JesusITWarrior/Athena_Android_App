@@ -40,6 +40,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //otherwise, it takes the user through the login/registration process.
             else
             {*/
+            if (UserData.ReadLoginInfo())
+            {
+                Login(false);
+            }
             UserPreferences.SetViewSize(this);
             if(UserPreferences.widthWindowSize == UserPreferences.WindowSize.COMPACT)
                 SetContentView(Resource.Layout.activity_main);
@@ -59,7 +63,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 {
                     UserData.SaveLoginInfo();
                 }
-                Login();
+                Login(true);
             };
             //Registration Button variable
             Button registrationButton = FindViewById<Button>(Resource.Id.registration);
@@ -92,16 +96,20 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <summary>
         /// Attempts a login, a server error prints Connection Error, while incorrect login prints "Wrong info"
         /// </summary>
-        private async void Login()
+        private async void Login(bool credsVisible)
         {
             Dialog loading = new Dialog(this);
             loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
             loading.Show();
             //Check database
             bool canLogin = true;
-            await DatabaseManager.GetAuthDBInfo();
+            DatabaseManager.GetAuthDBInfo();
             if (!DatabaseManager.isOnline)
             {
+                if (!credsVisible)
+                {
+                    SetContentView(Resource.Layout.activity_main);
+                }
                 //Throw login connection error
                 TextView loginError = FindViewById<TextView>(Resource.Id.loginError);
                 loginError.Text = "Connection Error";
@@ -114,6 +122,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //If login is successful, then it fetches the log container information and proceeds past login screen to status screen
             if (canLogin)
             {
+                UserData.SaveLoginInfo();
                 await DatabaseManager.GetLogDBInfo();
                 ToContent();
             }

@@ -101,7 +101,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //TODO: Show loading
                 dbTime = inventory.updatedTime;
             }
-            catch (Exception e)
+            catch
             {
                 //Failed to get anything from database, probably offline
                 DatabaseManager.isOnline = false;
@@ -147,7 +147,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// Updates the view of the inventory list
         /// </summary>
         /// <param name="i"></param>
-        public void UpdateView(Item i=null)
+        public async void UpdateView(Item i=null)
         {
             if (i != null)
             {
@@ -160,7 +160,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             inventory.updatedTime = DateTime.Now;
             //Writes all changes to local file and database
             WriteListToFile();
-            DatabaseManager.WriteToDB(inventory);
+
+            await DatabaseManager.WriteToDB(inventory);
 
             //Adapts ListView to entire list
             ItemListViewAdapter adapter = new ItemListViewAdapter(this, inventory.inventory);

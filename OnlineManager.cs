@@ -54,6 +54,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             DataStruct ds = JsonConvert.DeserializeObject<DataStruct>(rawData);
             username = ds.username;
             password = ds.password;
+            key = ds.key;
             //Handle any auth here
             //Login();
             return true;
@@ -136,7 +137,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// Fetches client, database, and container values for AuthBase (Authentification)
         /// </summary>
         /// <returns></returns>
-        public static async Task GetAuthDBInfo()
+        public static void GetAuthDBInfo()
         {
             try
             {
@@ -151,7 +152,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 if (container != null)
                     isOnline = true;
             }
-            catch (Exception e)
+            catch
             {
                 isOnline = false;
             }
@@ -226,7 +227,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Login unsuccessful
                 return false;
             }
-            catch (CosmosException ce)
+            catch
             {
                 //Some sort of error occured and login failed
                 return false;
@@ -242,7 +243,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <returns></returns>
         public static async Task<bool> Register(string user, string password, string picString = null)
         {
-            await DatabaseManager.GetAuthDBInfo();
+            DatabaseManager.GetAuthDBInfo();
             try
             {
                 //Creates AuthDB object to log information to database
@@ -262,7 +263,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 {
                     response = await container.CreateItemAsync<UserData.AuthDB>(cred);
                 }
-                catch (CosmosException ce)
+                catch
                 {
                     //Most likely already exists or some other error was hit.
                     return false;
@@ -300,22 +301,22 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             try
             {
-                string itemsToBeSelected = "SELECT r.id FROM r ";
-                string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'inventory\'";
+                //string itemsToBeSelected = "SELECT r.id FROM r";
+                //string where = " WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'inventory\'";
                 //Creates item logging object and populates it
-
+                //string rawquery = itemsToBeSelected + where;
                 //Attempts to replace item if it exists, or else it creates a new item
                 ItemResponse<InventoryDB> response;
                 try
                 {
                     response = await container.ReplaceItemAsync<InventoryDB>(inventory, inventory.id);
                 }
-                catch (CosmosException ce)
+                catch
                 {
                     response = await container.CreateItemAsync<InventoryDB>(inventory);
                 }
             }
-            catch (Exception ce)
+            catch
             {
                 //Some error was hit
                 return;
@@ -359,7 +360,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Returns itemDB for processing
                 return inventory;
             }
-            catch (Exception e)
+            catch
             {
                 //Some error has occurred
                 return null;
@@ -401,7 +402,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 }
                 if (fetchPictureToo)
                 {
-                    PictureDB p = new PictureDB();
                     itemsToBeSelected = "SELECT r.Picture FROM r ";
                     where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'picture\'";
 
@@ -428,7 +428,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Returns statusDB object for processing
                 return overall;
             }
-            catch(Exception e)
+            catch
             {
                 //No longer connected to the internet!!!
                 return null;
@@ -472,7 +472,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Returns statusDB object for processing
                 return overall;
             }
-            catch (Exception e)
+            catch
             {
                 //No longer connected to the internet!!!
                 return null;
