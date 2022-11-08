@@ -112,6 +112,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public static void InvokeBluetoothReset()
         {
             ResetBluetooth.Invoke(1, EventArgs.Empty);
+            OnboardingActivity.loading.Dismiss();
+            OnboardingActivity.loading.Hide();
         }
 
         /// <summary>

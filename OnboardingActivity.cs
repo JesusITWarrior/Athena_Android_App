@@ -120,6 +120,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
             BluetoothManager.receiver = new BluetoothManager.MyBTReceiver();
             RegisterReceiver(BluetoothManager.receiver, filter);
+            BluetoothManager.devices.Clear();
 
             //Begins the discovery with the Registered receiver
             BluetoothManager.adapter.StartDiscovery();
@@ -190,22 +191,46 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             if(Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Lollipop)
             {
-                int permissionCheck = (int)CheckSelfPermission("android.permission.ACCESS_FINE_LOCATION");
-                permissionCheck += (int)CheckSelfPermission("android.permission.ACCESS_COARSE_LOCATION");
-                permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH");
-                permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH_ADMIN");
-                if(permissionCheck != 0)
+                int permissionCheck = 0;
+                permissionCheck += (int)CheckSelfPermission("android.permission.ACCESS_FINE_LOCATION");
+                if (permissionCheck != 0)
                 {
-                    RequestPermissions(new string[] { "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.BLUETOOTH", "android.permission.BLUETOOTH_ADMIN" }, 0);
+                    RequestPermissions(new string[] { "android.permission.ACCESS_FINE_LOCATION" }, 0);
                     permissionCheck = (int)CheckSelfPermission("android.permission.ACCESS_FINE_LOCATION");
-                    permissionCheck += (int)CheckSelfPermission("android.permission.ACCESS_COARSE_LOCATION");
-                    permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH");
-                    permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH_ADMIN");
-                    if(permissionCheck != 0)
+                    if (permissionCheck != 0)
                         return false;
-                    else
-                        return true;
                 }
+
+                permissionCheck = 0;
+                permissionCheck += (int)CheckSelfPermission("android.permission.ACCESS_COARSE_LOCATION");
+                if (permissionCheck != 0)
+                {
+                    RequestPermissions(new string[] { "android.permission.ACCESS_COARSE_LOCATION" }, 0);
+                    permissionCheck = (int)CheckSelfPermission("android.permission.ACCESS_COARSE_LOCATION");
+                    if (permissionCheck != 0)
+                        return false;
+                }
+
+                permissionCheck = 0;
+                permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH");
+                if (permissionCheck != 0)
+                {
+                    RequestPermissions(new string[] { "android.permission.BLUETOOTH" }, 0);
+                    permissionCheck = (int)CheckSelfPermission("android.permission.BLUETOOTH");
+                    if (permissionCheck != 0)
+                        return false;
+                }
+
+                permissionCheck = 0;
+                permissionCheck += (int)CheckSelfPermission("android.permission.BLUETOOTH_ADMIN");
+                if (permissionCheck != 0)
+                {
+                    RequestPermissions(new string[] { "android.permission.BLUETOOTH_ADMIN" }, 0);
+                    permissionCheck = (int)CheckSelfPermission("android.permission.BLUETOOTH_ADMIN");
+                    if (permissionCheck != 0)
+                        return false;
+                }
+                return true;
             }
             return true;
         }
@@ -393,6 +418,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     //TODO: Block any other buttons from being clicked
                     OnboardingActivity.loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
                     OnboardingActivity.loading.Show();
+                    Task.Delay(2000);
                     //When clicked, it should attempt a bluetooth socket connection
                     Toast.MakeText(ctx, "Conntecting to "+deviceName.Text, ToastLength.Short).Show();
                     try

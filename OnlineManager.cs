@@ -93,6 +93,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             public string id { get; set; }
             public string password { get; set; }
             public Guid key { get; set; }
+            public string picUUID { get; set; }
             public string pfp { get; set; }
         }
     }
@@ -251,6 +252,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 cred.password = password;
                 //New Guid is generated for the account
                 cred.key = Guid.NewGuid();
+                cred.picUUID = null;
                 //pfp is assign to either a string, or null if no picture is chosen
                 cred.pfp = picString;
                 
@@ -370,11 +372,11 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <returns>
         /// StatusDB = object with database status attached
         /// </returns>
-        public static async Task<StatusDB> ReadStatusFromDB(bool fetchPictureToo, int entries=1)
+        public static async Task<StatusDB> ReadCurrentStatusFromDB(bool fetchPictureToo)
         {
             try
             {
-                string itemsToBeSelected = "SELECT TOP "+entries+" r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
+                string itemsToBeSelected = "SELECT TOP 1 r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
                 string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'status\'";
                 string order = " ORDER BY r.updatedTime DESC";
                 //Queries database for the status values
@@ -389,15 +391,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     //Sets up statusDB object to be populated
 
                     //Populates statusDB object
-                    while (queryResult.HasMoreResults)
+                    FeedResponse<Status> resultSet = await queryResult.ReadNextAsync();
+                    foreach (Status item in resultSet)
                     {
-                        FeedResponse<Status> resultSet = await queryResult.ReadNextAsync();
-                        foreach (Status item in resultSet)
-                        {
-                            overall.updatedTime = item.updatedTime;
-                            overall.DoorOpenStatus = item.DoorOpenStatus;
-                            overall.Temperature = item.Temperature;
-                        }
+                        overall.updatedTime = item.updatedTime;
+                        overall.DoorOpenStatus = item.DoorOpenStatus;
+                        overall.Temperature = item.Temperature;
                     }
                 }
                 if (fetchPictureToo)
@@ -430,6 +429,50 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 return overall;
             }
             catch(Exception e)
+            {
+                //No longer connected to the internet!!!
+                return null;
+            }
+        }
+
+        public static async Task<List<StatusDB>> ReadStatusesFromDB(int entries = 1)
+        {
+            try
+            {
+                string itemsToBeSelected = "SELECT TOP "+entries+" r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
+                string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'status\'";
+                string order = " ORDER BY r.updatedTime DESC";
+                //Queries database for the status values
+                string rawQuery = itemsToBeSelected + where + order;
+                //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Status\"";
+                QueryDefinition query = new QueryDefinition(rawQuery);
+
+                List<StatusDB> overall = new List<StatusDB>();
+                //Gets result of query
+                using (FeedIterator<Status> queryResult = container.GetItemQueryIterator<Status>(query))
+                {
+                    int i = 0;
+                    //Sets up statusDB object to be populated
+
+                    //Populates statusDB object
+                    while (queryResult.HasMoreResults)
+                    {
+                        FeedResponse<Status> resultSet = await queryResult.ReadNextAsync();
+                        foreach (Status item in resultSet)
+                        {
+                            overall[i].updatedTime = item.updatedTime;
+                            overall[i].DoorOpenStatus = item.DoorOpenStatus;
+                            overall[i].Temperature = item.Temperature;
+                        }
+                        overall[i].Picture = null;
+                        i++;
+                    }
+                }
+
+                //Returns statusDB object for processing
+                return overall;
+            }
+            catch (Exception e)
             {
                 //No longer connected to the internet!!!
                 return null;

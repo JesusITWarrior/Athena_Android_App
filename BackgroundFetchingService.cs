@@ -64,7 +64,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 bool doorAlarm = false;
                 while (instance == this)
                 {
-                    StatusDB dbStatus = await DatabaseManager.ReadStatusFromDB(false);
+                    StatusDB dbStatus = await DatabaseManager.ReadCurrentStatusFromDB(false);
                     int temp = dbStatus.Temperature;
                     bool door= dbStatus.DoorOpenStatus;
                     if (door)

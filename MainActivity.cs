@@ -217,7 +217,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         private async void FetchStatusFromDB()
         {
             //Fetches items from database
-            recordedStatus = await DatabaseManager.ReadStatusFromDB(true);
+            recordedStatus = await DatabaseManager.ReadCurrentStatusFromDB(true);
             //Sets items into the global variable for use
             //recordedStatus = databaseList.loggedStatus;
 
@@ -254,12 +254,23 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             string pic=recordedStatus.Picture;
 
             //Formats the Views to a more readable format with the new values
-            temperature.Text = temp+" F";
-            if(temp < 40 && temp > 30)
-                temperature.SetTextColor(Color.Green);
+            if (UserPreferences.isF)
+            {
+                temperature.Text = temp + " F";
+                if (temp > 30 && temp < 40)
+                    temperature.SetTextColor(Color.Green);
+                else
+                    temperature.SetTextColor(Color.Red);
+            }
             else
-                temperature.SetTextColor(Color.Red);
-
+            {
+                temp = (int)((float)(temp) - 32) * (5 / 9);
+                temperature.Text = temp + " C";
+                if(temp > -1 && temp < 4)
+                    temperature.SetTextColor(Color.Green);
+                else
+                    temperature.SetTextColor(Color.Red);
+            }
             if (door)
             {
                 doorStatus.Text = "Open";
