@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="BackgroundFetchingService.cs" />
     <Compile Include="BluetoothManager.cs" />
+    <Compile Include="GraphingActivity.cs" />
     <Compile Include="OnboardingActivity.cs" />
     <Compile Include="OnlineManager.cs" />
     <Compile Include="InventoryActivity.cs" />
@@ -120,9 +121,6 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Karamunting.Android.NsAveek.GraphView">
-      <Version>0.1.0</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Azure.Cosmos">
       <Version>3.31.2</Version>
     </PackageReference>
@@ -317,6 +315,26 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\bluetooth_disabled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\Athena_Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xxhdpi\Athena_Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-xhdpi\Athena_Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-mdpi\Athena_Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\mipmap-hdpi\Athena_Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\usage_graph.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

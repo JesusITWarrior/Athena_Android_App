@@ -30,7 +30,7 @@
       android:layout_centerHorizontal="true"
       android:background="@drawable/black_border"
       android:id="@+id/passwordLayout"
-      android:layout_above="@id/RememberMe"
+      android:layout_above="@id/LoginButton"
       android:hint="@string/PasswordPrompt"
       app:passwordToggleEnabled="true">
     <com.google.android.material.textfield.TextInputEditText
@@ -51,15 +51,6 @@
         android:paddingTop="15dp"
         android:textCursorDrawable="@color/black"
         android:textSize="12sp"/> -->
-
-  <CheckBox
-      android:text="Remember Me"
-      android:textColor="@color/white"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_above="@id/loginError"
-      android:layout_marginLeft="100sp"
-      android:id="@+id/RememberMe" />
 
   <TextView
       android:layout_width="match_parent"

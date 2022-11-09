@@ -59,6 +59,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 pass = FindViewById<TextView>(Resource.Id.passwordReg);
                 bool success = await DatabaseManager.Register(user.Text, pass.Text, picString);
                 //If the registration was successful it should prompt to start onboarding with Athena device
+                UserData.SaveLoginInfo();
                 if (success)
                 {
                     SetContentView(Resource.Layout.FirstPair);

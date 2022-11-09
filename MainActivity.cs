@@ -40,44 +40,41 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //otherwise, it takes the user through the login/registration process.
             else
             {*/
+            UserPreferences.SetViewSize(this);
             if (UserData.ReadLoginInfo())
             {
                 Login(false);
             }
-            UserPreferences.SetViewSize(this);
-            if(UserPreferences.widthWindowSize == UserPreferences.WindowSize.COMPACT)
-                SetContentView(Resource.Layout.activity_main);
             else
-                SetContentView(Resource.Layout.activity_main);
-            //Log In Button variable
-            Button loginButton = FindViewById<Button>(Resource.Id.LoginButton);
-            loginButton.Click += (o, e) =>
             {
-                //When login button is clicked, it gets the username and password components, sets the credentials, checks the remember me box, and then attempts a login with the input credentials.
-                string user = FindViewById<TextView>(Resource.Id.username).Text;
-                string pass = FindViewById<TextView>(Resource.Id.password).Text;
-                UserData.SetCredentials(user, pass);
-                //Checks the state of Remember Me box, if it's checked, it writes a cred file, otherwise, it continues
-                CheckBox rm = FindViewById<CheckBox>(Resource.Id.RememberMe);
-                if (rm.Checked)
+                if (UserPreferences.widthWindowSize == UserPreferences.WindowSize.COMPACT)
+                    SetContentView(Resource.Layout.activity_main);
+                else
+                    SetContentView(Resource.Layout.activity_main);
+                //Log In Button variable
+                Button loginButton = FindViewById<Button>(Resource.Id.LoginButton);
+                loginButton.Click += (o, e) =>
                 {
-                    UserData.SaveLoginInfo();
-                }
-                Login(true);
-            };
-            //Registration Button variable
-            Button registrationButton = FindViewById<Button>(Resource.Id.registration);
-            registrationButton.Click += (o, e) =>
-            {
+                //When login button is clicked, it gets the username and password components, sets the credentials, checks the remember me box, and then attempts a login with the input credentials.
+                    string user = FindViewById<TextView>(Resource.Id.username).Text;
+                    string pass = FindViewById<TextView>(Resource.Id.password).Text;
+                    UserData.SetCredentials(user, pass);
+                    Login(true);
+                };
+                //Registration Button variable
+                Button registrationButton = FindViewById<Button>(Resource.Id.registration);
+                registrationButton.Click += (o, e) =>
+                {
                 //Opens new Registration Activity
-                StartActivityForResult(typeof(RegistrationActivity), 1);
-            };
-            /*Button testButton = FindViewById<Button>(Resource.Id.testButton);
-            testButton.Click += (o,e) =>
-            {
-                StartActivity(typeof(Test));
-            };*/
-            //}
+                    StartActivityForResult(typeof(RegistrationActivity), 1);
+                };
+                /*Button testButton = FindViewById<Button>(Resource.Id.testButton);
+                testButton.Click += (o,e) =>
+                {
+                    StartActivity(typeof(Test));
+                };*/
+                //}
+            }
         }
 
         /// <summary>
@@ -100,7 +97,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             Dialog loading = new Dialog(this);
             loading.SetContentView(Resource.Layout.whole_screen_loading_symbol);
-            loading.Show();
+            if(credsVisible)
+                loading.Show();
+
             //Check database
             bool canLogin = true;
             DatabaseManager.GetAuthDBInfo();
@@ -137,8 +136,11 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 loginError.Visibility = Android.Views.ViewStates.Visible;
                 
             }
-            loading.Dismiss();
-            loading.Hide();
+            if (credsVisible)
+            {
+                loading.Dismiss();
+                loading.Hide();
+            }
         }
 
         /// <summary>

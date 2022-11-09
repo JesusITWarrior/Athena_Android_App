@@ -66,8 +66,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public static void SaveLoginInfo()
         {
             var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), "nani.athena");
-            if (!File.Exists(destination))
-                File.Create(destination);
             DataStruct ds = new DataStruct();
             ds.username = username;
             ds.password = password;

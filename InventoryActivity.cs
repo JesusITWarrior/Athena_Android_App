@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using System.IO;
+using AndroidX.Core.Graphics.Drawable;
+using Android.Graphics;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
@@ -35,7 +37,22 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
             
             SetContentView(Resource.Layout.inventory);
-            
+
+            ImageButton pfp = FindViewById<ImageButton>(Resource.Id.pfp);
+            if (UserData.pfp != null)
+            {
+                RoundedBitmapDrawable rbmpd = RoundedBitmapDrawableFactory.Create(Resources, UserData.pfp);
+                rbmpd.Circular = true;
+                pfp.SetImageDrawable(rbmpd);
+            }
+            else
+            {
+                Bitmap bmp = BitmapFactory.DecodeResource(Resources, Resource.Drawable.blank_profile_picture);
+                RoundedBitmapDrawable rbmpd = RoundedBitmapDrawableFactory.Create(Resources, bmp);
+                rbmpd.Circular = true;
+                pfp.SetImageDrawable(rbmpd);
+            }
+
             //Sets up references to all components seen
             TextView title = FindViewById<TextView>(Resource.Id.ListTitle);
             Button addButton = FindViewById<Button>(Resource.Id.addToList);
@@ -73,7 +90,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             ItemFile itemFile = new ItemFile();
             //ItemDB class for reading
             inventory = new InventoryDB();
-            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
+            var destination = System.IO.Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
             //If the file exists, then read it.
             if (File.Exists(destination))
             {
@@ -129,7 +146,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public void WriteListToFile()
         {
             //Gets path, and creates file if it doesn't exist
-            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
+            var destination = System.IO.Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), filename);
             if (!File.Exists(destination))
                 File.Create(destination);
 
