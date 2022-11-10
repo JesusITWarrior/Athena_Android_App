@@ -29,7 +29,14 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Don't load any graphs and warn user!
                 return;
             }
-            graphView = new WebView(this);
+            graphView = FindViewById<WebView>(Resource.Id.graph);
+            WebSettings settings = graphView.Settings;
+            settings.BuiltInZoomControls = true;
+            settings.JavaScriptEnabled = true;
+            graphView.SetWebViewClient(new WebViewClient());
+            graphView.LoadUrl("file:///android_asset/chart.html");
+
+            graphView.EvaluateJavascript(string.Format(""));
         }
     }
 }

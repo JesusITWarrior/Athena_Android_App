@@ -98,7 +98,7 @@
             android:layout_height="50sp"
             android:id="@+id/testButton"
             android:background="@color/colorAccent"
-            android:text="TestNotification"
+            android:text="Test"
             android:shadowColor="@color/black"
             android:textColor="@color/white"
             android:layout_above="@id/bluetooth"/>

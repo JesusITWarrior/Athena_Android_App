@@ -200,7 +200,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             {
                 await System.Threading.Tasks.Task.Delay(3000);
                 string channelName = "Test Button Pressed!!!";
-                NotificationChannel chan = new NotificationChannel(channelName, channelName, NotificationImportance.Max);
+                StartActivity(typeof(GraphingActivity));
+                /*NotificationChannel chan = new NotificationChannel(channelName, channelName, NotificationImportance.Max);
                 NotificationManager manager = (NotificationManager)GetSystemService(Context.NotificationService);
                 manager.CreateNotificationChannel(chan);
 
@@ -215,7 +216,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                                                                .Build();
 
 
-                manager.Notify(1, notification);
+                manager.Notify(1, notification);*/
             };
 
             //Gets the current status values for the fridge
