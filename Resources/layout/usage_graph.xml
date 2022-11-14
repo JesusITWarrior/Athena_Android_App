@@ -7,10 +7,15 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_start">
     <android.webkit.WebView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:minWidth="25px"
         android:minHeight="25px"
         android:id="@+id/graph" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test"
+        android:id="@id/testButton"/>
 </RelativeLayout>

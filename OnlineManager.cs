@@ -433,16 +433,82 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
         }
 
-        public static async Task<List<StatusDB>> ReadStatusesFromDB(int entries = 1)
+        public static async Task<List<GraphStatusDB>> ReadStatusesFromDB(DateTime recentDate, DateTime? oldDate = null)
         {
             try
             {
-                string itemsToBeSelected = "SELECT TOP "+entries+" r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
+                string rawQuery=null;
+                if(oldDate != null)
+                {
+                    string itemsToBeSelected = "SELECT r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
+                    if (oldDate > recentDate)
+                    {
+                        //They put in swapped dates! Beat 'em up!
+                        DateTime? placeholder = oldDate;
+                        oldDate = recentDate;
+                        recentDate = (DateTime)placeholder;
+                    }
+                    string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'status\' AND (r.updatedTime BETWEEN \""+((DateTime)oldDate).ToString("yyyy-MM-dd hh-mm-ss.ssssss")+"\" AND \""+ recentDate.ToString("yyyy-MM-dd hh-mm-ss.ssssss") + "\")";
+                    string order = " ORDER BY r.updatedTime DESC";
+                    //Queries database for the status values
+                    rawQuery = itemsToBeSelected + where + order;
+                }
+                else
+                {
+                    DateTime oneWeekOut = DateTime.Today.AddDays(-7).Date;
+
+                    string itemsToBeSelected = "SELECT r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
+                    string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'status\' AND (r.updatedTime BETWEEN \"" + oneWeekOut.ToString("yyyy-MM-dd hh-mm-ss.ssssss") + "\" AND \"" + recentDate.ToString("yyyy-MM-dd hh-mm-ss.ssssss") + "\")";
+                    string order = " ORDER BY r.updatedTime DESC";
+                    //Queries database for the status values
+                    rawQuery = itemsToBeSelected + where + order;
+                }
+
+                QueryDefinition query = new QueryDefinition(rawQuery);
+
+                List<GraphStatusDB> overall = new List<GraphStatusDB>();
+                //Gets result of query
+                using (FeedIterator<Status> queryResult = container.GetItemQueryIterator<Status>(query))
+                {
+                    int i = 0;
+                    //Sets up statusDB object to be populated
+
+                    //Populates statusDB object
+                    while (queryResult.HasMoreResults)
+                    {
+                        FeedResponse<Status> resultSet = await queryResult.ReadNextAsync();
+                        foreach (Status item in resultSet)
+                        {
+                            overall.Add(new GraphStatusDB());
+                            overall[i].updatedTime = item.updatedTime.ToString("MM-dd-yyyy hh:mm");
+                            overall[i].DoorOpenStatus = item.DoorOpenStatus;
+                            overall[i].Temperature = item.Temperature;
+                            i++;
+                        }
+                    }
+                }
+
+                //Returns statusDB object for processing
+                return overall;
+            }
+            catch (Exception e)
+            {
+                //No longer connected to the internet!!!
+                return null;
+            }
+        }
+
+        public static async Task<List<StatusDB>> ReadStatusesFromDB(int entries)
+        {
+            try
+            {
+                string itemsToBeSelected = "SELECT TOP " + entries + " r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
                 string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'status\'";
                 string order = " ORDER BY r.updatedTime DESC";
                 //Queries database for the status values
                 string rawQuery = itemsToBeSelected + where + order;
                 //string rawQuery = "SELECT * FROM ReportedData r WHERE r.id = \"" + UserData.username + " Status\"";
+
                 QueryDefinition query = new QueryDefinition(rawQuery);
 
                 List<StatusDB> overall = new List<StatusDB>();
@@ -458,12 +524,14 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                         FeedResponse<Status> resultSet = await queryResult.ReadNextAsync();
                         foreach (Status item in resultSet)
                         {
+                            overall.Add(new StatusDB());
                             overall[i].updatedTime = item.updatedTime;
                             overall[i].DoorOpenStatus = item.DoorOpenStatus;
                             overall[i].Temperature = item.Temperature;
+                            overall[i].Picture = null;
+                            i++;
                         }
-                        overall[i].Picture = null;
-                        i++;
+                        
                     }
                 }
 
