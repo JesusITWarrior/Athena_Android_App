@@ -5,15 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_start">
+    android:background="@drawable/Splash_Background">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Wifi Networks Available"
-        android:textSize="25sp"
-        android:textColor="@color/white"
+        android:textSize="50sp"
+        android:textColor="@color/black"
         android:textStyle="bold"
         android:id="@+id/wifiTitle"/>
 

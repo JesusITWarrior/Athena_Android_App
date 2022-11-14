@@ -132,7 +132,6 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\bg_start.xml" />
     <AndroidResource Include="Resources\layout\list_view.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -344,6 +343,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\chart.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\Splash_Background.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

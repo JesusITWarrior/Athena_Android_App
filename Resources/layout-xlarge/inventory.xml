@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_start"
+    android:background="@drawable/Splash_Background"
     android:minWidth="25px"
     android:minHeight="25px">
 
@@ -17,21 +17,21 @@
         style="@style/TextShadowStyle"
         android:text="@string/ListTitle"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30sp"
+        android:textSize="60sp"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/mainToolbar"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textStyle="bold"
         android:id="@+id/ListTitle"
         android:layout_marginBottom="20sp"
         />
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="200sp"
-        android:layout_height="50sp"
-        android:background="@color/white"
+        android:layout_width="400sp"
+        android:layout_height="100sp"
+        android:background="@drawable/black_border"
         android:layout_below="@id/ListTitle"
         android:hint="@string/ItemLabel"
         android:id="@+id/itemInputLayout" 
@@ -40,7 +40,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="40sp"
             android:paddingTop="5sp"
             android:paddingBottom="5sp"
             android:id="@+id/itemInput"
@@ -51,8 +51,9 @@
 
     <Button
         android:text="+"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        android:textSize="60sp"
         android:layout_toRightOf="@id/itemInputLayout"
         android:layout_alignTop="@id/itemInputLayout"
         android:id="@+id/addToList" />

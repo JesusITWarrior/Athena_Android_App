@@ -122,7 +122,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// <summary>
         /// Checks all permissions before starting bluetooth discovery
         /// </summary>
-        private void StartDiscovery()
+        private async void StartDiscovery()
         {
             if (!BluetoothManager.adapter.IsDiscovering)
             {
@@ -134,7 +134,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //TODO: Check if this has a forever loop bug that will not keep prompting user
                 while (!hasPerms)
                 {
-                    hasPerms = CheckPerms();
+                    hasPerms = await CheckPerms();
                 }
                 
                 DiscoverBluetooth();
@@ -219,7 +219,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         /// true = all perms granted
         /// false = some/all perms denied
         /// </returns>
-        private bool CheckPerms()
+        private async Task<bool> CheckPerms()
         {
             if(Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Lollipop)
             {

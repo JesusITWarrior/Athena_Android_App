@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="DeviceName"
-        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:textSize="60sp"
         android:id="@+id/wifiName"/>
     <Button
         android:layout_width="match_parent"

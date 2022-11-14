@@ -10,15 +10,16 @@
         android:layout_height="wrap_content"
         android:text="Athena"
         android:id="@+id/itemName"
-        android:textColor="@color/white"
-        android:textSize="26sp"
+        android:textColor="@color/black"
+        android:textSize="52sp"
         android:paddingLeft="10sp"
         android:paddingRight="40sp"
         android:textStyle="bold"/>
     <Button
         android:text="+"
-        android:layout_width="40sp"
-        android:layout_height="40sp"
+        android:textSize="40sp"
+        android:layout_width="80sp"
+        android:layout_height="80sp"
         android:layout_alignParentRight="true"
         android:id="@+id/addItemButton" />
     <TextView
@@ -28,13 +29,14 @@
         android:layout_toLeftOf="@id/addItemButton"
         android:text="0"
         android:id="@+id/itemAmount"
-        android:textColor="@color/white"
-        android:textSize="26sp"
+        android:textColor="@color/black"
+        android:textSize="52sp"
         android:textStyle="bold"/>
     <Button
         android:text="-"
-        android:layout_width="40sp"
-        android:layout_height="40sp"
+        android:textSize="40sp"
+        android:layout_width="80sp"
+        android:layout_height="80sp"
         android:layout_toLeftOf="@id/itemAmount"
         android:id="@+id/subtractItemButton" />
     
