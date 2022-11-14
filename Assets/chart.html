@@ -17,14 +17,14 @@
             const obj = JSON.parse(databaseData);
 
             var dataArray = [
-                ['Time', 'Door Open', 'Door Closed', {role: 'style'}]
+                ['Time', 'Temperature', {role: 'style'}]
             ];
 
             for (var i = 0; i < obj.length; i++) {
-                dataArray.push([obj[i].updatedTime, obj[i].Temperature, obj[i].Temperature, (obj[i].DoorOpenStatus ? 'red' : 'green')]);
+                dataArray.push([obj[i].updatedTime, obj[i].Temperature, (obj[i].DoorOpenStatus ? 'red' : 'green')]);
             }
 
-            //text.textContent = dataArray[1][2];
+            text.textContent = dataArray[1][2];
 
             var data = google.visualization.arrayToDataTable(dataArray);
 
@@ -33,9 +33,7 @@
                 subtitle: 'Yep',
                 width: 400,
                 height: 400,
-                legend: { position: 'top' },
-                colors: ['red', 'green'],
-                isStacked: true
+                legend: { position: 'none' },
             };
 
             // Instantiate and draw our chart, passing in some options.

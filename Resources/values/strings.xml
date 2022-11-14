@@ -8,4 +8,17 @@
   <string name="PasswordPrompt">Password</string>
   <string name="ItemLabel">Item</string>
   <string name="UnknownTemp">\?\?\? F</string>
+  
+  <string-array name="sortTypes">
+    <item>Column Chart</item>
+    <item>Bar Chart</item>
+    <item>Line Chart</item>
+    <item>Table</item>
+  </string-array>
+  
+  <string-array name="graphTypes">
+    <item>Week View</item>
+    <item>Date Selection</item>
+    <item>Entries Selection</item>
+  </string-array>
 </resources>

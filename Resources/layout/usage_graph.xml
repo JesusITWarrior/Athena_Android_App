@@ -17,5 +17,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Test"
-        android:id="@id/testButton"/>
+        android:id="@+id/confirmButton"/>
+    <ImageView
+        android:layout_width="100sp"
+        android:layout_height="50sp"
+        android:layout_above="@id/graph"
+        android:layout_marginLeft="75sp"
+        android:id="@+id/openLegend"
+        android:background="@drawable/doorclosedgraph"/>
+    <ImageView
+        android:layout_width="100sp"
+        android:layout_height="50sp"
+        android:layout_above="@id/graph"
+        android:layout_toRightOf="@id/openLegend"
+        android:layout_marginLeft="50sp"
+        android:background="@drawable/dooropengraph"/>
+
+    <!--<DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/graph"
+        android:id="@+id/oldestDate" />-->
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/graph"
+        android:id="@+id/sortType" />
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/graph"
+        android:id="@+id/graphType" />
 </RelativeLayout>

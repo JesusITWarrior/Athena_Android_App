@@ -481,7 +481,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                             overall.Add(new GraphStatusDB());
                             overall[i].updatedTime = item.updatedTime.ToString("MM-dd-yyyy hh:mm");
                             overall[i].DoorOpenStatus = item.DoorOpenStatus;
-                            overall[i].Temperature = (UserPreferences.isF) ? item.Temperature[1] : item.Temperature[0];
+                            //overall[i].Temperature = (UserPreferences.isF) ? item.Temperature[1] : item.Temperature[0];
+                            overall[i].Temperature = item.Temperature;
                             i++;
                         }
                     }
@@ -497,7 +498,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
         }
 
-        public static async Task<List<StatusDB>> ReadStatusesFromDB(int entries)
+        public static async Task<List<GraphStatusDB>> ReadStatusesFromDB(int entries)
         {
             try
             {
@@ -510,7 +511,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
                 QueryDefinition query = new QueryDefinition(rawQuery);
 
-                List<StatusDB> overall = new List<StatusDB>();
+                List<GraphStatusDB> overall = new List<GraphStatusDB>();
                 //Gets result of query
                 using (FeedIterator<Status> queryResult = container.GetItemQueryIterator<Status>(query))
                 {
@@ -523,11 +524,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                         FeedResponse<Status> resultSet = await queryResult.ReadNextAsync();
                         foreach (Status item in resultSet)
                         {
-                            overall.Add(new StatusDB());
-                            overall[i].updatedTime = item.updatedTime;
+                            overall.Add(new GraphStatusDB());
+                            overall[i].updatedTime = item.updatedTime.ToString("MM-dd-yyyy hh:mm");
                             overall[i].DoorOpenStatus = item.DoorOpenStatus;
                             overall[i].Temperature = item.Temperature;
-                            overall[i].Picture = null;
                             i++;
                         }
                         

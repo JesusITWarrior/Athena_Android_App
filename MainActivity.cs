@@ -260,7 +260,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             ImageView shelf = FindViewById<ImageView>(Resource.Id.shelfPic);
             nonInvasiveLoadingIcon = FindViewById<ProgressBar>(Resource.Id.nonInvasiveLoading);
             nonInvasiveLoadingIcon.Visibility = Android.Views.ViewStates.Visible;
-            int temp= (UserPreferences.isF) ? recordedStatus.Temperature[1] : recordedStatus.Temperature[0];
+            //int temp= (UserPreferences.isF) ? recordedStatus.Temperature[1] : recordedStatus.Temperature[0];
+            int temp = recordedStatus.Temperature;
             bool door=recordedStatus.DoorOpenStatus;
             string pic=recordedStatus.Picture;
 

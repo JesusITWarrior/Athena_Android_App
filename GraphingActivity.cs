@@ -33,6 +33,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
         GraphType graphType = GraphType.ColumnChart;
         SortType sortType = SortType.Default;
+        DateTime? oldDate = null;
+        int entries = 1;
         WebView graphView;
         string databaseData;
 
@@ -56,23 +58,102 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //graphView.AddJavascriptInterface();
 
             GetFromDB();
-            Button testButton = FindViewById<Button>(Resource.Id.testButton);
-            testButton.Click += (o, e) =>
+            graphView.LoadUrl(string.Format("javascript: drawAthenaChart(\"{0}\",{1})", databaseData, (int)graphType));
+            Button submitButton = FindViewById<Button>(Resource.Id.confirmButton);
+            Spinner graphChoice = FindViewById<Spinner>(Resource.Id.graphType);
+            Spinner sortChoice = FindViewById<Spinner>(Resource.Id.sortType);
+
+            ArrayAdapter graphAdapter = ArrayAdapter.CreateFromResource(this, Resource.Array.graphTypes, Android.Resource.Layout.SimpleSpinnerItem);
+            graphAdapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
+            graphChoice.Adapter = graphAdapter;
+
+            ArrayAdapter sortAdapter = ArrayAdapter.CreateFromResource(this, Resource.Array.sortTypes, Android.Resource.Layout.SimpleSpinnerItem);
+            sortAdapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
+            sortChoice.Adapter = sortAdapter;
+
+            submitButton.Click += (o, e) =>
             {
-                graphType = GraphType.LineChart;
-                //graphView.LoadUrl(string.Format("javascript: drawChart({0},{1})", 1, 1));
-                //graphView.LoadUrl("javascript:");
-                databaseData = databaseData.Replace("\"", "\'");
-                //graphView.EvaluateJavascript(string.Format("testFunction(\"{0}\")", databaseData), null);
+                switch (sortType) {
+                    case SortType.Default:
+                        GetFromDB();
+                        break;
+                    case SortType.Date:
+                        GetFromDB(sortType, oldDate);
+                        break;
+                    case SortType.Entries:
+                        GetFromDB(entries);
+                        break;
+                }
                 graphView.LoadUrl(string.Format("javascript: drawAthenaChart(\"{0}\",{1})", databaseData, (int)graphType));
             };
         }
 
-        private async void GetFromDB()
+        private void SortTypeChanged(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            List<GraphStatusDB> data = await DatabaseManager.ReadStatusesFromDB(DateTime.Now);
+            Spinner spinner = (Spinner)sender;
+            if (spinner.Id == Resource.Id.sortType)
+            {
+                sortType = (SortType)e.Position;
+                DatePicker date1 = FindViewById<DatePicker>(Resource.Id.oldDate);
+                DatePicker date2 = FindViewById<DatePicker>(Resource.Id.newDate);
+                TextView entries = FindViewById<TextView>(Resource.Id.entriesInput);
+                switch (sortType)
+                {
+                    case SortType.Default:
+                        date1.Visibility = ViewStates.Gone;
+                        date2.Visibility = ViewStates.Gone;
+                        entries.Visibility = ViewStates.Gone;
+                        break;
+                    case SortType.Date:
+                        date1.Visibility = ViewStates.Visible;
+                        date2.Visibility = ViewStates.Visible;
+                        entries.Visibility = ViewStates.Gone;
+                        break;
+                    case SortType.Entries:
+                        date1.Visibility = ViewStates.Gone;
+                        date2.Visibility = ViewStates.Gone;
+                        entries.Visibility = ViewStates.Visible;
+                        break;
+                }
+            }
+
+        }
+
+        private void GraphTypeChanged(object sender, AdapterView.ItemSelectedEventArgs e)
+        {
+            Spinner spinner = (Spinner)sender;
+            if(spinner.Id == Resource.Id.graphType)
+                graphType = (GraphType)e.Position;
+        }
+
+        private async void GetFromDB(SortType sort = SortType.Default, DateTime? oldDate = null)
+        {
+            switch (sort) {
+                case SortType.Default:
+                    {
+                        List<GraphStatusDB> data = await DatabaseManager.ReadStatusesFromDB(DateTime.Now);
+                        databaseData = "";
+                        databaseData = JsonConvert.SerializeObject(data);
+                        databaseData = databaseData.Replace("\"", "\'");
+                        break;
+                    }
+                case SortType.Date:
+                    {
+                        List<GraphStatusDB> data = await DatabaseManager.ReadStatusesFromDB(DateTime.Now, oldDate);
+                        databaseData = "";
+                        databaseData = JsonConvert.SerializeObject(data);
+                        databaseData = databaseData.Replace("\"", "\'");
+                        break;
+                    }
+            }
+        }
+
+        private async void GetFromDB(int entries, SortType sort = SortType.Entries)
+        {
+            List<GraphStatusDB> data = await DatabaseManager.ReadStatusesFromDB(entries);
             databaseData = "";
             databaseData = JsonConvert.SerializeObject(data);
+            databaseData = databaseData.Replace("\"", "\'");
         }
     }
     public class GraphStatusDB

@@ -64,7 +64,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     {
         public DateTime updatedTime { get; set; }
         public bool DoorOpenStatus { get; set; }
-        public int[] Temperature { get; set; }
+        //public int[] Temperature { get; set; }
+        public int Temperature { get; set; }
     }
 
     public struct PictureDB
@@ -79,7 +80,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     {
         public DateTime updatedTime { get; set; }
         public bool DoorOpenStatus { get; set; }
-        public int[] Temperature { get; set; }
+        //public int[] Temperature { get; set; }
+        public int Temperature { get; set; }
         public string Picture { get; set; }
     }
 
