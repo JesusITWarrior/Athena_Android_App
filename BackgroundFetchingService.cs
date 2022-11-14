@@ -65,7 +65,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 while (instance == this)
                 {
                     StatusDB dbStatus = await DatabaseManager.ReadCurrentStatusFromDB(false);
-                    int temp = dbStatus.Temperature;
+                    int temp = (UserPreferences.isF) ? dbStatus.Temperature[1] : dbStatus.Temperature[0];
                     bool door= dbStatus.DoorOpenStatus;
                     if (door)
                     {

@@ -338,7 +338,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Gets result of query
                 using FeedIterator<InvGuidAndItems> queryResult = container.GetItemQueryIterator<InvGuidAndItems>(query);
                 //Creating new itemDB object to populate with results
-                InvGuidAndItems items = new InvGuidAndItems();
 
                 //Populates itemDB object from results
                 while (queryResult.HasMoreResults)
@@ -482,7 +481,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                             overall.Add(new GraphStatusDB());
                             overall[i].updatedTime = item.updatedTime.ToString("MM-dd-yyyy hh:mm");
                             overall[i].DoorOpenStatus = item.DoorOpenStatus;
-                            overall[i].Temperature = item.Temperature;
+                            overall[i].Temperature = (UserPreferences.isF) ? item.Temperature[1] : item.Temperature[0];
                             i++;
                         }
                     }

@@ -199,7 +199,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             test.Click += async (o,e) =>
             {
                 await System.Threading.Tasks.Task.Delay(3000);
-                string channelName = "Test Button Pressed!!!";
                 StartActivity(typeof(GraphingActivity));
                 /*NotificationChannel chan = new NotificationChannel(channelName, channelName, NotificationImportance.Max);
                 NotificationManager manager = (NotificationManager)GetSystemService(Context.NotificationService);
@@ -261,7 +260,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             ImageView shelf = FindViewById<ImageView>(Resource.Id.shelfPic);
             nonInvasiveLoadingIcon = FindViewById<ProgressBar>(Resource.Id.nonInvasiveLoading);
             nonInvasiveLoadingIcon.Visibility = Android.Views.ViewStates.Visible;
-            int temp=recordedStatus.Temperature;
+            int temp= (UserPreferences.isF) ? recordedStatus.Temperature[1] : recordedStatus.Temperature[0];
             bool door=recordedStatus.DoorOpenStatus;
             string pic=recordedStatus.Picture;
 
