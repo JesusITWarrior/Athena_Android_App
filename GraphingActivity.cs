@@ -11,11 +11,14 @@ using System.Text;
 using AndroidX.AppCompat.App;
 using Android.Webkit;
 using Newtonsoft.Json;
+using AndroidX.Core.Graphics.Drawable;
+using Android.Graphics;
+using Google.Android.Material.TextField;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
     [Activity(Label = "GraphingActivity")]
-    public class GraphingActivity : AppCompatActivity
+    public class GraphingActivity : AppCompatActivity, DatePickerDialog.IOnDateSetListener
     {
         public enum GraphType
         {
@@ -27,16 +30,26 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         public enum SortType
         {
             Default,
-            Entries,
-            Date
+            Date,
+            Entries
         }
 
         GraphType graphType = GraphType.ColumnChart;
         SortType sortType = SortType.Default;
+        DateTime newDate = DateTime.Now;
         DateTime? oldDate = null;
         int entries = 1;
         WebView graphView;
         string databaseData;
+
+        Button submitButton, startDateButton, endDateButton;
+        Button placeholder;
+        LinearLayout startDate, endDate;
+        Spinner graphChoice, sortChoice;
+        TextView entriesText;
+        TextInputLayout entriesLayout;
+
+        int year, month, date;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -49,6 +62,21 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Don't load any graphs and warn user!
                 return;
             }
+            ImageButton pfp = FindViewById<ImageButton>(Resource.Id.pfp);
+            if (UserData.pfp != null)
+            {
+                RoundedBitmapDrawable rbmpd = RoundedBitmapDrawableFactory.Create(Resources, UserData.pfp);
+                rbmpd.Circular = true;
+                pfp.SetImageDrawable(rbmpd);
+            }
+            else
+            {
+                Bitmap bmp = BitmapFactory.DecodeResource(Resources, Resource.Drawable.blank_profile_picture);
+                RoundedBitmapDrawable rbmpd = RoundedBitmapDrawableFactory.Create(Resources, bmp);
+                rbmpd.Circular = true;
+                pfp.SetImageDrawable(rbmpd);
+            }
+
             graphView = FindViewById<WebView>(Resource.Id.graph);
             WebSettings settings = graphView.Settings;
             settings.BuiltInZoomControls = true;
@@ -57,11 +85,26 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             graphView.LoadUrl("file:///android_asset/chart.html");
             //graphView.AddJavascriptInterface();
 
-            GetFromDB();
+            GetFromDB(DateTime.Now);
             graphView.LoadUrl(string.Format("javascript: drawAthenaChart(\"{0}\",{1})", databaseData, (int)graphType));
-            Button submitButton = FindViewById<Button>(Resource.Id.confirmButton);
-            Spinner graphChoice = FindViewById<Spinner>(Resource.Id.graphType);
-            Spinner sortChoice = FindViewById<Spinner>(Resource.Id.sortType);
+
+            //Find all components needed
+            submitButton = FindViewById<Button>(Resource.Id.confirmButton);
+            graphChoice = FindViewById<Spinner>(Resource.Id.graphType);
+            graphChoice.ItemSelected += GraphTypeChanged;
+            sortChoice = FindViewById<Spinner>(Resource.Id.sortType);
+            sortChoice.ItemSelected += SortTypeChanged;
+
+            startDateButton = FindViewById<Button>(Resource.Id.startDateButton);
+            startDateButton.Click += ShowDate;
+            endDateButton = FindViewById<Button>(Resource.Id.endDateButton);
+            endDateButton.Click += ShowDate;
+
+            startDate = FindViewById<LinearLayout>(Resource.Id.startDate);
+            endDate = FindViewById<LinearLayout>(Resource.Id.endDate);
+
+            entriesText = FindViewById<TextView>(Resource.Id.entriesText);
+            entriesLayout = FindViewById<TextInputLayout>(Resource.Id.entriesLayout);
 
             ArrayAdapter graphAdapter = ArrayAdapter.CreateFromResource(this, Resource.Array.graphTypes, Android.Resource.Layout.SimpleSpinnerItem);
             graphAdapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
@@ -71,16 +114,20 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             sortAdapter.SetDropDownViewResource(Android.Resource.Layout.SimpleSpinnerDropDownItem);
             sortChoice.Adapter = sortAdapter;
 
+            //Button DatePicker1 = FindViewById<Button>(Resource.Id.);
+            //Button DatePicker2 = FindViewById<Button>(Resource.Id.);
+
             submitButton.Click += (o, e) =>
             {
                 switch (sortType) {
                     case SortType.Default:
-                        GetFromDB();
+                        GetFromDB(DateTime.Now);
                         break;
                     case SortType.Date:
-                        GetFromDB(sortType, oldDate);
+                        GetFromDB((newDate != null) ? newDate : DateTime.Now, sortType, oldDate);
                         break;
                     case SortType.Entries:
+                        entries = int.Parse(entriesText.Text);
                         GetFromDB(entries);
                         break;
                 }
@@ -88,45 +135,74 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             };
         }
 
+        private void ShowDate(object sender, EventArgs e)
+        {
+            placeholder = (Button)sender;
+            string raw = DateTime.Now.ToString("MM-dd-yyyy");
+            month = int.Parse(raw.Substring(0,2))-1;
+            date = int.Parse(raw.Substring(3,2));
+            year = int.Parse(raw.Substring(6));
+            ShowDialog(1);
+        }
+
+        protected override Dialog OnCreateDialog(int id)
+        {
+            if (id == 1)
+            {
+                return new DatePickerDialog(this, this, year, month, date);
+            }
+            return null;
+        }
+
+        public void OnDateSet(DatePicker view, int year, int month, int dayOfMonth)
+        {
+            month += 1;
+            if (month == 13)
+                month = 1;
+
+            string monthString = (month < 10) ? "0" + month.ToString() : month.ToString();
+            string dayString = (dayOfMonth < 10) ? "0" + dayOfMonth.ToString() : dayOfMonth.ToString();
+            placeholder.Text = monthString + "-" + dayString + "-" + year.ToString();
+            if(placeholder.Id == Resource.Id.startDateButton)
+            {
+                oldDate = DateTime.Parse(placeholder.Text);
+            }else if(placeholder.Id == Resource.Id.endDateButton)
+            {
+                newDate = DateTime.Parse(placeholder.Text);
+            }
+            placeholder = null;
+        }
+
         private void SortTypeChanged(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            Spinner spinner = (Spinner)sender;
-            if (spinner.Id == Resource.Id.sortType)
+            sortType = (SortType)e.Position;
+            switch (sortType)
             {
-                sortType = (SortType)e.Position;
-                DatePicker date1 = FindViewById<DatePicker>(Resource.Id.oldDate);
-                DatePicker date2 = FindViewById<DatePicker>(Resource.Id.newDate);
-                TextView entries = FindViewById<TextView>(Resource.Id.entriesInput);
-                switch (sortType)
-                {
-                    case SortType.Default:
-                        date1.Visibility = ViewStates.Gone;
-                        date2.Visibility = ViewStates.Gone;
-                        entries.Visibility = ViewStates.Gone;
-                        break;
-                    case SortType.Date:
-                        date1.Visibility = ViewStates.Visible;
-                        date2.Visibility = ViewStates.Visible;
-                        entries.Visibility = ViewStates.Gone;
-                        break;
-                    case SortType.Entries:
-                        date1.Visibility = ViewStates.Gone;
-                        date2.Visibility = ViewStates.Gone;
-                        entries.Visibility = ViewStates.Visible;
-                        break;
-                }
+                case SortType.Default:
+                    startDate.Visibility = ViewStates.Gone;
+                    endDate.Visibility = ViewStates.Gone;
+                    entriesLayout.Visibility = ViewStates.Gone;
+                    break;
+                case SortType.Date:
+                    startDate.Visibility = ViewStates.Visible;
+                    endDate.Visibility = ViewStates.Visible;
+                    entriesLayout.Visibility = ViewStates.Gone;
+                    break;
+                case SortType.Entries:
+                    startDate.Visibility = ViewStates.Gone;
+                    endDate.Visibility = ViewStates.Gone;
+                    entriesLayout.Visibility = ViewStates.Visible;
+                    break;
             }
 
         }
 
         private void GraphTypeChanged(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            Spinner spinner = (Spinner)sender;
-            if(spinner.Id == Resource.Id.graphType)
-                graphType = (GraphType)e.Position;
+            graphType = (GraphType)e.Position;
         }
 
-        private async void GetFromDB(SortType sort = SortType.Default, DateTime? oldDate = null)
+        private async void GetFromDB(DateTime newDate, SortType sort = SortType.Default, DateTime? oldDate = null)
         {
             switch (sort) {
                 case SortType.Default:
@@ -139,7 +215,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     }
                 case SortType.Date:
                     {
-                        List<GraphStatusDB> data = await DatabaseManager.ReadStatusesFromDB(DateTime.Now, oldDate);
+                        List<GraphStatusDB> data = await DatabaseManager.ReadStatusesFromDB(newDate, oldDate);
                         databaseData = "";
                         databaseData = JsonConvert.SerializeObject(data);
                         databaseData = databaseData.Replace("\"", "\'");

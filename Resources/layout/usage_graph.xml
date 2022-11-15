@@ -6,18 +6,129 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/Splash_Background">
-    <android.webkit.WebView
-        android:layout_width="match_parent"
+    <include
+        android:id="@+id/mainToolbar"
+        layout="@layout/mainactionbar"/>
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:id="@+id/graph" />
+        android:layout_below="@id/mainToolbar"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginTop="25sp"
+        android:id="@+id/ChartTitle"
+        android:text="Status History:"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ChartTitle"
+        android:text="Sort By:"
+        android:id="@+id/SortTypeLabel"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="20sp"/>
+    <Spinner
+        android:textAlignment="center"
+        android:layout_width="100sp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/SortTypeLabel"
+        android:background="@drawable/black_border"
+        android:id="@+id/sortType"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ChartTitle"
+        android:layout_alignParentRight="true"
+        android:text="Graph Type:"
+        android:id="@+id/GraphTypeLabel"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="20sp"/>
+    <Spinner
+        android:textAlignment="center"
+        android:layout_width="100sp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/GraphTypeLabel"
+        android:background="@drawable/black_border"
+        android:id="@+id/graphType"/>
+
+    <!--Date Range Selected-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/graphType"
+        android:layout_marginLeft="25sp"
+        android:layout_marginTop="50sp"
+        android:id="@+id/startDate"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Date:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="01-01-2022"
+            android:id="@+id/startDateButton"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/graphType"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="25sp"
+        android:layout_marginTop="50sp"
+        android:id="@+id/endDate"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Date:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01-01-2022"
+            android:textAlignment="center"
+            android:id="@+id/endDateButton"/>
+    </LinearLayout>
+    
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/graphType"
+        android:layout_marginTop="100sp"
+        android:background="@drawable/black_border"
+        android:id="@+id/entriesLayout"
+        android:layout_centerHorizontal="true"
+        android:hint="# of entries"
+        android:visibility="gone">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:id="@+id/entriesText"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test"
+        android:text="Generate Chart"
+        android:layout_above="@id/openLegend"
+        android:layout_centerHorizontal="true"
         android:id="@+id/confirmButton"/>
+
     <ImageView
         android:layout_width="100sp"
         android:layout_height="50sp"
@@ -32,20 +143,12 @@
         android:layout_toRightOf="@id/openLegend"
         android:layout_marginLeft="50sp"
         android:background="@drawable/dooropengraph"/>
-
-    <!--<DatePicker
-        android:layout_width="wrap_content"
+    <android.webkit.WebView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/graph"
-        android:id="@+id/oldestDate" />-->
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/graph"
-        android:id="@+id/sortType" />
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/graph"
-        android:id="@+id/graphType" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/graph" />
 </RelativeLayout>

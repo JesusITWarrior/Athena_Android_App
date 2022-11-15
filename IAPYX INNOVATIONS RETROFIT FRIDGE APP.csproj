@@ -220,85 +220,85 @@
     <AndroidResource Include="Resources\drawable\Default_Shelf_Pic.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\bluetoothsearch.xml">
+    <AndroidResource Include="Resources\layout-large\bluetoothsearch.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\activity_main.xml">
+    <AndroidResource Include="Resources\layout-large\activity_main.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\BTDeviceListLayout.xml">
+    <AndroidResource Include="Resources\layout-large\BTDeviceListLayout.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\FirstPair.xml">
+    <AndroidResource Include="Resources\layout-large\FirstPair.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\info_screen.xml">
+    <AndroidResource Include="Resources\layout-large\info_screen.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\inventory.xml">
+    <AndroidResource Include="Resources\layout-large\inventory.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\list_view.xml">
+    <AndroidResource Include="Resources\layout-large\list_view.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\MainActionBar.xml">
+    <AndroidResource Include="Resources\layout-large\MainActionBar.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\registration.xml">
+    <AndroidResource Include="Resources\layout-large\registration.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\test.xml">
+    <AndroidResource Include="Resources\layout-large\test.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\whole_screen_loading_symbol.xml">
+    <AndroidResource Include="Resources\layout-large\whole_screen_loading_symbol.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\WifiCredentialPopup.xml">
+    <AndroidResource Include="Resources\layout-large\WifiCredentialPopup.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\WifiNetworkListLayout.xml">
+    <AndroidResource Include="Resources\layout-large\WifiNetworkListLayout.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout-xlarge\wifisearch.xml">
+    <AndroidResource Include="Resources\layout-large\wifisearch.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
@@ -349,6 +349,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\Splash_Background.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout-large\usage_graph.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
