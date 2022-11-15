@@ -61,9 +61,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/graphType"
         android:layout_marginLeft="25sp"
-        android:layout_marginTop="50sp"
+        android:layout_marginTop="25sp"
+        android:layout_below="@id/graphType"
         android:id="@+id/startDate"
         android:visibility="gone">
         <TextView
@@ -83,16 +83,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginRight="25sp"
+        android:layout_marginTop="25sp"
         android:layout_below="@id/graphType"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="25sp"
-        android:layout_marginTop="50sp"
         android:id="@+id/endDate"
         android:visibility="gone">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Date:"
+            android:text="End Date:"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="20sp"/>
         <Button
@@ -108,7 +108,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/graphType"
-        android:layout_marginTop="100sp"
+        android:layout_marginTop="50sp"
         android:background="@drawable/black_border"
         android:id="@+id/entriesLayout"
         android:layout_centerHorizontal="true"

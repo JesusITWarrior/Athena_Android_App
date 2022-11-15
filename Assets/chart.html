@@ -24,15 +24,15 @@
                 dataArray.push([obj[i].updatedTime, obj[i].Temperature, (obj[i].DoorOpenStatus ? 'red' : 'green')]);
             }
 
-            text.textContent = dataArray[1][2];
+            //text.textContent = dataArray[1][2];
 
             var data = google.visualization.arrayToDataTable(dataArray);
 
             var options = {
                 title: 'Athena Chart',
                 subtitle: 'Yep',
-                width: 400,
-                height: 400,
+                width: 300,
+                height: 300,
                 legend: { position: 'none' },
             };
 
@@ -64,6 +64,6 @@
     <p id="textItem"></p>
 
     <!--Div that will hold the pie chart-->
-    <div id="chart_div"></div>
+    <div id="chart_div" align="center"></div>
 </body>
 </html>

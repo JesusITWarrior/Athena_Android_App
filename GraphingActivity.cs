@@ -14,10 +14,11 @@ using Newtonsoft.Json;
 using AndroidX.Core.Graphics.Drawable;
 using Android.Graphics;
 using Google.Android.Material.TextField;
+using System.Threading.Tasks;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
-    [Activity(Label = "GraphingActivity")]
+    [Activity(Label = "GraphingActivity", ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
     public class GraphingActivity : AppCompatActivity, DatePickerDialog.IOnDateSetListener
     {
         public enum GraphType
@@ -85,8 +86,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             graphView.LoadUrl("file:///android_asset/chart.html");
             //graphView.AddJavascriptInterface();
 
-            GetFromDB(DateTime.Now);
-            graphView.LoadUrl(string.Format("javascript: drawAthenaChart(\"{0}\",{1})", databaseData, (int)graphType));
+            InitialChart();
 
             //Find all components needed
             submitButton = FindViewById<Button>(Resource.Id.confirmButton);
@@ -117,22 +117,28 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             //Button DatePicker1 = FindViewById<Button>(Resource.Id.);
             //Button DatePicker2 = FindViewById<Button>(Resource.Id.);
 
-            submitButton.Click += (o, e) =>
+            submitButton.Click += async (o, e) =>
             {
                 switch (sortType) {
                     case SortType.Default:
-                        GetFromDB(DateTime.Now);
+                        await GetFromDB(DateTime.Now);
                         break;
                     case SortType.Date:
-                        GetFromDB((newDate != null) ? newDate : DateTime.Now, sortType, oldDate);
+                        await GetFromDB((newDate != null) ? newDate : DateTime.Now, sortType, oldDate);
                         break;
                     case SortType.Entries:
                         entries = int.Parse(entriesText.Text);
-                        GetFromDB(entries);
+                        await GetFromDB(entries);
                         break;
                 }
                 graphView.LoadUrl(string.Format("javascript: drawAthenaChart(\"{0}\",{1})", databaseData, (int)graphType));
             };
+        }
+
+        private async void InitialChart()
+        {
+            await GetFromDB(DateTime.Now);
+            graphView.LoadUrl(string.Format("javascript: drawAthenaChart(\"{0}\",{1})", databaseData, (int)graphType));
         }
 
         private void ShowDate(object sender, EventArgs e)
@@ -179,6 +185,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             switch (sortType)
             {
                 case SortType.Default:
+                    oldDate = null;
+                    newDate = DateTime.Now;
                     startDate.Visibility = ViewStates.Gone;
                     endDate.Visibility = ViewStates.Gone;
                     entriesLayout.Visibility = ViewStates.Gone;
@@ -189,6 +197,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     entriesLayout.Visibility = ViewStates.Gone;
                     break;
                 case SortType.Entries:
+                    oldDate = null;
+                    newDate = DateTime.Now;
                     startDate.Visibility = ViewStates.Gone;
                     endDate.Visibility = ViewStates.Gone;
                     entriesLayout.Visibility = ViewStates.Visible;
@@ -202,7 +212,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             graphType = (GraphType)e.Position;
         }
 
-        private async void GetFromDB(DateTime newDate, SortType sort = SortType.Default, DateTime? oldDate = null)
+        private async Task GetFromDB(DateTime newDate, SortType sort = SortType.Default, DateTime? oldDate = null)
         {
             switch (sort) {
                 case SortType.Default:
@@ -224,9 +234,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
         }
 
-        private async void GetFromDB(int entries, SortType sort = SortType.Entries)
+        private async Task GetFromDB(int entries, SortType sort = SortType.Entries)
         {
             List<GraphStatusDB> data = await DatabaseManager.ReadStatusesFromDB(entries);
+            data.Sort((x,y)=>string.Compare(x.updatedTime, y.updatedTime));
             databaseData = "";
             databaseData = JsonConvert.SerializeObject(data);
             databaseData = databaseData.Replace("\"", "\'");

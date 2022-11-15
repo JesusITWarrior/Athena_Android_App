@@ -448,7 +448,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                         recentDate = (DateTime)placeholder;
                     }
                     string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'status\' AND (r.updatedTime BETWEEN \""+((DateTime)oldDate).ToString("yyyy-MM-dd hh-mm-ss.ssssss")+"\" AND \""+ recentDate.ToString("yyyy-MM-dd hh-mm-ss.ssssss") + "\")";
-                    string order = " ORDER BY r.updatedTime DESC";
+                    string order = " ORDER BY r.updatedTime ASC";
                     //Queries database for the status values
                     rawQuery = itemsToBeSelected + where + order;
                 }
@@ -458,7 +458,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
                     string itemsToBeSelected = "SELECT r.updatedTime, r.DoorOpenStatus, r.Temperature FROM r ";
                     string where = "WHERE r.accountID = \'" + UserData.key + "\' AND r.recordType = \'status\' AND (r.updatedTime BETWEEN \"" + oneWeekOut.ToString("yyyy-MM-dd hh-mm-ss.ssssss") + "\" AND \"" + recentDate.ToString("yyyy-MM-dd hh-mm-ss.ssssss") + "\")";
-                    string order = " ORDER BY r.updatedTime DESC";
+                    string order = " ORDER BY r.updatedTime ASC";
                     //Queries database for the status values
                     rawQuery = itemsToBeSelected + where + order;
                 }

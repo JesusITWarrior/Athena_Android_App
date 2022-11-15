@@ -7,13 +7,21 @@
     android:layout_height="match_parent"
     android:background="@drawable/Splash_Background"
     android:minWidth="25px"
-    android:minHeight="25px">
+    android:minHeight="25px"
+    android:fitsSystemWindows="true"
+    android:id="@+id/scene"
+    tools:openDrawer="start">
 
     <com.google.android.material.navigation.NavigationView
-        android:layout_width="240dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:menu="@menu/maindrawer"/>
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@color/white"
+        android:id="@+id/HamburgerMenu"
+        app:itemTextColor="@color/white"
+        app:itemTextAppearance="?android:attr/textAppearanceLarge"
+        app:menu="@menu/FunctionMenu"
+        android:layout_gravity="start"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -77,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="400sp"
             android:textAlignment="center"
-            android:layout_centerInParent="true"
+            android:layout_marginTop="200sp"
             android:id="@+id/shelfPic"
             android:textColor="@color/white"
             android:background="@color/mtrl_btn_transparent_bg_color"

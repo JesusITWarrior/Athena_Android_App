@@ -1,21 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!--For all properties see: https://aka.ms/android-menu-resource-->
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="https://schemas.android.com.apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:showin="navigation_view">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <!--<group android:checkableBehavior="single">
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+  <group android:checkableBehavior="single">
     <item
-      android:id="@+id/nav_item_1"
-      android:checked="true"
-      android:title="@string/ToList"/>
-  </RelativeLayout>
-</group>-->
+      android:id="@+id/ToListButton"
+      android:title="Inventory"/>
+    <!--android:icon=""-->
+    <item
+      android:id="@+id/bluetooth"
+      android:title="Set up Athena"/>
 
+    <item
+      android:id="@+id/ToGraphButton"
+      android:title="Historical Fridge Data"/>
+  </group>
   
 </menu>
 
@@ -24,7 +23,7 @@
 Android.Widget.SearchView searchView;
 public override bool OnCreateOptionsMenu(IMenu menu)
 {
-  this.MenuInflater.Inflate(Resource.Menu.MainOptionsMenu, menu);
+  this.MenuInflater.Inflate(Resource.Menu.FunctionMenu, menu);
 
   var searchItem = menu.FindItem(Resource.Id.action_search);
 

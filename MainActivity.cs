@@ -11,6 +11,7 @@ using Android.Widget;
 using AndroidX.Core.Graphics.Drawable;
 using AndroidX.DrawerLayout.Widget;
 using System.Collections.Generic;
+using Google.Android.Material.Navigation;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
@@ -24,6 +25,9 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         ProgressBar nonInvasiveLoadingIcon;
         private BackgroundFetchingService fetchService;
         private Intent fetchIntent;
+        DrawerLayout scene;
+        NavigationView hamburger;
+        AndroidX.AppCompat.Widget.Toolbar toolbar;
         /// <summary>
         /// Acts as "Main" function. Is run the moment this activity is started (app is booted)
         /// </summary>
@@ -68,12 +72,6 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 //Opens new Registration Activity
                     StartActivityForResult(typeof(RegistrationActivity), 1);
                 };
-                /*Button testButton = FindViewById<Button>(Resource.Id.testButton);
-                testButton.Click += (o,e) =>
-                {
-                    StartActivity(typeof(Test));
-                };*/
-                //}
             }
         }
 
@@ -161,8 +159,16 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
 
             SetContentView(Resource.Layout.info_screen);
-            Toolbar tb = FindViewById<Toolbar>(Resource.Id.mainToolbar);
-            SetActionBar(tb);
+            scene = FindViewById<DrawerLayout>(Resource.Id.scene);
+            hamburger = FindViewById<NavigationView>(Resource.Id.HamburgerMenu);
+            toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.mainToolbar);
+            SetSupportActionBar(toolbar);
+
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, scene, toolbar, 1, 2);
+            scene.AddDrawerListener(toggle);
+            toggle.SyncState();
+
+            
 
             //Sets user's pfp to the ImageButton
             ImageButton pfp = FindViewById<ImageButton>(Resource.Id.pfp);
