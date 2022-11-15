@@ -9,23 +9,11 @@
     <include
         android:id="@+id/mainToolbar"
         layout="@layout/mainactionbar"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/mainToolbar"
-        android:textAlignment="center"
-        android:layout_centerHorizontal="true"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_marginTop="25sp"
-        android:id="@+id/ChartTitle"
-        android:text="Status History:"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ChartTitle"
+        android:layout_below="@id/mainToolbar"
         android:text="Sort By:"
         android:id="@+id/SortTypeLabel"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -41,7 +29,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ChartTitle"
+        android:layout_below="@id/mainToolbar"
         android:layout_alignParentRight="true"
         android:text="Graph Type:"
         android:id="@+id/GraphTypeLabel"

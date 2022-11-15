@@ -29,6 +29,8 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 
         //Bitmap is used for profile picture. Is drawn during runtime in activity with Drawable functions
         public static Android.Graphics.Bitmap pfp { get; set; }
+        public static string pfpRaw { get; set; }
+        public static string picUUID { get; set; }
 
         /// <summary>
         /// Sets username and password instance to input for login screen
@@ -72,6 +74,12 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             ds.key = key;
             string raw = JsonConvert.SerializeObject(ds);
             File.WriteAllText(destination, raw);
+        }
+
+        public static void RemoveLoginInfo()
+        {
+            var destination = Path.Combine(Application.Context.GetExternalFilesDir(null).ToString(), "nani.athena");
+            File.Delete(destination);
         }
 
         /// <summary>
@@ -208,10 +216,11 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     {
                         //Assigns Guid key for logging
                         UserData.key = creds.key;
-
+                        UserData.picUUID = creds.picUUID;
                         //Assigns pfp Bitmap if it exists, or else makes it default picture
                         if (creds.pfp != null)
                         {
+                            UserData.pfpRaw = creds.pfp;
                             byte[] picRaw = Convert.FromBase64String(creds.pfp);
                             UserData.pfp = Android.Graphics.BitmapFactory.DecodeByteArray(picRaw, 0, picRaw.Length);
                         }
@@ -286,6 +295,24 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             catch (CosmosException ce)
             {
                 //Some sort of Failure, account registration unsuccessful
+                return false;
+            }
+        }
+
+        public static async Task<bool> UpdateUser(UserSettings.UpdateData cred)
+        {
+            DatabaseManager.GetAuthDBInfo();
+
+            //Sends cred object to database
+            ItemResponse<UserSettings.UpdateData> response;
+            try
+            {
+                response = await container.ReplaceItemAsync<UserSettings.UpdateData>(cred, cred.id);
+                return true;
+            }
+            catch
+            {
+                //Most likely already exists or some other error was hit.
                 return false;
             }
         }

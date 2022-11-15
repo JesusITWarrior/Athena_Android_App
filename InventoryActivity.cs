@@ -54,6 +54,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             }
 
             //Sets up references to all components seen
+            TextView overallTitle = FindViewById<TextView>(Resource.Id.ABTitle);
+            overallTitle.Text = "Inventory";
+            Button hamburger = FindViewById<Button>(Resource.Id.moreOptionsButton);
+            hamburger.Visibility = ViewStates.Gone;
             TextView title = FindViewById<TextView>(Resource.Id.ListTitle);
             Button addButton = FindViewById<Button>(Resource.Id.addToList);
             

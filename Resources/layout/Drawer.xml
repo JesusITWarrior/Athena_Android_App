@@ -15,6 +15,6 @@
         android:id="@+id/HamburgerMenu"
         app:itemTextColor="@color/white"
         app:itemTextAppearance="?android:attr/textAppearanceLarge"
-        app:menu="@menu/FunctionMenu"
+        app:menu="@menu/function_menu"
         android:layout_gravity="start"/>
 </androidx.drawerlayout.widget.DrawerLayout>

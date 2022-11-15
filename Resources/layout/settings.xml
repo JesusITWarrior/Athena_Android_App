@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/Splash_Background"
+    android:minWidth="25px"
+    android:minHeight="25px">
+    <include
+        android:id="@id/mainToolbar"
+        layout="@layout/mainactionbar"/>
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="200sp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/Photo"
+        android:layout_alignTop="@id/Photo"
+        android:background="@drawable/black_border"
+        android:id="@+id/usernameLayout"
+        android:hint="@string/UsernamePrompt">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/username"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="150dp"
+        android:id="@+id/Photo"
+        >
+        <ImageView
+            android:contentDescription="Profile Picture"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            
+            android:background="@drawable/circle_button"
+            android:src="@drawable/blank_profile_picture"
+            android:scaleType="fitXY"
+            android:id="@+id/pfp"/>
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/pfp"
+            android:text="SELECT PHOTO"
+            android:id="@+id/selectPhoto"/>
+    </LinearLayout>
+
+    <!--<EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="@string/UsernamePrompt"
+        android:paddingLeft="17dp"
+        android:paddingTop="15dp"
+        android:textCursorDrawable="@color/black"
+        android:textSize="12sp"/> -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/Photo"
+        android:layout_centerHorizontal="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temperature Units:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold"/>
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10sp"
+            android:background="@color/colorAccent"
+            android:shadowColor="@color/black"
+            android:textColor="@color/white"
+            android:layout_below="@id/selectPhoto"
+            android:textOn="Fahrenheit"
+            android:textOff="Celsius"
+            android:id="@+id/tempPref"/>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:id="@+id/apply"
+        android:background="@color/colorAccent"
+        android:text="Apply Changes"
+        android:shadowColor="@color/black"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5sp"/>
+
+</RelativeLayout>

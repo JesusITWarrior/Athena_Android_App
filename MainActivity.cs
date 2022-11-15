@@ -12,6 +12,8 @@ using AndroidX.Core.Graphics.Drawable;
 using AndroidX.DrawerLayout.Widget;
 using System.Collections.Generic;
 using Google.Android.Material.Navigation;
+using Android.Views;
+using System.Threading.Tasks;
 
 namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
 {
@@ -19,7 +21,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
     /// First Activity of the app. Handles login and fridge status UI stuff
     /// </summary>
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, ScreenOrientation = Android.Content.PM.ScreenOrientation.Portrait)]
-    public class MainActivity : AppCompatActivity
+    public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
         StatusDB recordedStatus;
         ProgressBar nonInvasiveLoadingIcon;
@@ -161,13 +163,35 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
             SetContentView(Resource.Layout.info_screen);
             scene = FindViewById<DrawerLayout>(Resource.Id.scene);
             hamburger = FindViewById<NavigationView>(Resource.Id.HamburgerMenu);
+            hamburger.BringToFront();
+            hamburger.NavigationItemSelected += (sender, e) =>
+            {
+                switch (e.MenuItem.ItemId)
+                {
+                    case Resource.Id.ToListButton:
+                        StartActivity(new Intent(this, typeof(InventoryActivity)));
+                        break;
+                    case Resource.Id.bluetooth:
+                        StartActivity(typeof(OnboardingActivity));
+                        break;
+                    case Resource.Id.ToGraphButton:
+                        StartActivity(typeof(GraphingActivity));
+                        break;
+                }
+                scene.CloseDrawer(hamburger);
+            };
             toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.mainToolbar);
             SetSupportActionBar(toolbar);
 
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, scene, toolbar, 1, 2);
-            scene.AddDrawerListener(toggle);
-            toggle.SyncState();
+            Button sideMenuToggle = FindViewById<Button>(Resource.Id.moreOptionsButton);
+            sideMenuToggle.Click += (o, e) => {
+                scene.OpenDrawer(hamburger);
+            };
 
+            /*ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, scene, toolbar, 1, 2);
+            scene.AddDrawerListener(toggle);
+            toggle.SyncState();*/
+            
             
 
             //Sets user's pfp to the ImageButton
@@ -186,46 +210,19 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 pfp.SetImageDrawable(rbmpd);
             }
 
-            //Sets up inventoryButton event to start inventory list activity
-            Button invBtn = FindViewById<Button>(Resource.Id.ToListButton);
-            invBtn.Click += (o, e) =>
-            {
-                //When clicked, it starts new Inventory Activity
-                StartActivity(new Intent(this, typeof(InventoryActivity)));
-            };
-
-            //Sets up Bluetooth button setup button for onboarding process
-            Button bluetoothSetup = FindViewById<Button>(Resource.Id.bluetooth);
-            bluetoothSetup.Click += (o, e) =>
-            {
-                StartActivity(typeof(OnboardingActivity));
-            };
-
-            Button test = FindViewById<Button>(Resource.Id.testButton);
-            test.Click += async (o,e) =>
-            {
-                await System.Threading.Tasks.Task.Delay(3000);
-                StartActivity(typeof(GraphingActivity));
-                /*NotificationChannel chan = new NotificationChannel(channelName, channelName, NotificationImportance.Max);
-                NotificationManager manager = (NotificationManager)GetSystemService(Context.NotificationService);
-                manager.CreateNotificationChannel(chan);
-
-                Notification.Builder notificationBuilder = new Notification.Builder(this, channelName);
-
-                Notification notification = notificationBuilder.SetContentTitle(channelName)
-                                                               .SetSmallIcon(Resource.Mipmap.ic_launcher_round)
-                                                               .SetContentText("You clicked the notification button.")
-                                                               .SetOngoing(false)
-                                                               .SetChannelId(channelName)
-                                                               .SetAutoCancel(true)
-                                                               .Build();
-
-
-                manager.Notify(1, notification);*/
-            };
-
             //Gets the current status values for the fridge
             FetchStatusFromDB();
+
+            FetchingLoop();
+        }
+
+        private async void FetchingLoop()
+        {
+            while (true)
+            {
+                await Task.Delay(10000);
+                FetchStatusFromDB();
+            }
         }
 
         /// <summary>
@@ -332,6 +329,50 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                     Toast.MakeText(this, "Registration Failed", ToastLength.Short).Show();
                 }
             }
+        }
+
+        public override void OnBackPressed()
+        {
+            base.OnBackPressed();
+        }
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.pfp_options, menu);
+            return base.OnCreateOptionsMenu(menu);
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case Resource.Id.settings:
+
+                    break;
+                case Resource.Id.signout:
+                    UserData.username = null;
+                    UserData.password = null;
+                    UserData.key = Guid.Empty;
+                    UserData.pfp = null;
+                    UserData.RemoveLoginInfo();
+                    SetContentView(Resource.Layout.activity_main);
+                    break;
+            }
+            return base.OnOptionsItemSelected(item);
+        }
+
+        public bool OnNavigationItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case Resource.Id.inventory:
+
+                    break;
+                case Resource.Id.bluetooth:
+
+                    break;
+            }
+            return false;
         }
     }
 }

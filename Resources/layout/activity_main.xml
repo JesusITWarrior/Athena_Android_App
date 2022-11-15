@@ -81,7 +81,8 @@
         android:shadowColor="@color/black"
         android:textColor="@color/white"
         android:id="@+id/LoginButton"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20sp"/>
 
     <TextView
         android:layout_width="match_parent"

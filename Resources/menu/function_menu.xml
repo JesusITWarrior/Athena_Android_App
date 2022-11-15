@@ -15,7 +15,7 @@
       android:id="@+id/ToGraphButton"
       android:title="Historical Fridge Data"/>
   </group>
-  
+
 </menu>
 
 <!-- Code to implement into Activity:

@@ -20,7 +20,7 @@
         android:id="@+id/HamburgerMenu"
         app:itemTextColor="@color/white"
         app:itemTextAppearance="?android:attr/textAppearanceLarge"
-        app:menu="@menu/FunctionMenu"
+        app:menu="@menu/function_menu"
         android:layout_gravity="start"/>
 
     <RelativeLayout
@@ -31,17 +31,11 @@
             android:id="@+id/mainToolbar"
             layout="@layout/mainactionbar"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ToList"
-            android:id="@+id/ToListButton"
-            android:layout_below="@id/mainToolbar"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@id/ToListButton"
+            android:layout_below="@id/mainToolbar"
             android:id="@+id/temperatureLayout">
             <TextView
                 android:layout_width="wrap_content"
@@ -99,27 +93,6 @@
             android:layout_centerInParent="true"
             style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
             android:visibility="visible"
-            android:id="@+id/nonInvasiveLoading"/>
-
-        <Button
-            android:layout_width="100sp"
-            android:layout_height="50sp"
-            android:id="@+id/testButton"
-            android:background="@color/colorAccent"
-            android:text="Test"
-            android:shadowColor="@color/black"
-            android:textColor="@color/white"
-            android:layout_above="@id/bluetooth"/>
-
-        <Button
-            android:layout_width="100sp"
-            android:layout_height="50sp"
-            android:id="@+id/bluetooth"
-            android:background="@color/colorAccent"
-            android:text="Bluetooth"
-            android:shadowColor="@color/black"
-            android:textColor="@color/white"
-            android:layout_alignParentBottom="true"
-            android:layout_centerInParent="true"/>    
+            android:id="@+id/nonInvasiveLoading"/>   
     </RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

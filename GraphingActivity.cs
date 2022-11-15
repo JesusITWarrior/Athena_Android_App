@@ -25,8 +25,7 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
         {
             ColumnChart,
             BarChart,
-            LineChart,
-            Table
+            LineChart
         }
         public enum SortType
         {
@@ -77,6 +76,10 @@ namespace IAPYX_INNOVATIONS_RETROFIT_FRIDGE_APP
                 rbmpd.Circular = true;
                 pfp.SetImageDrawable(rbmpd);
             }
+            TextView title = FindViewById<TextView>(Resource.Id.ABTitle);
+            title.Text = "Status History";
+            Button hamburger = FindViewById<Button>(Resource.Id.moreOptionsButton);
+            hamburger.Visibility = ViewStates.Gone;
 
             graphView = FindViewById<WebView>(Resource.Id.graph);
             WebSettings settings = graphView.Settings;
